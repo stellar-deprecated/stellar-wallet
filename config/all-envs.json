@@ -1,0 +1,11 @@
+// configurations in this file are applied before the environment specific file 
+// (i.e. development.json)
+// thus, these are the default values that can be overridden in the other files
+
+{
+  "showStackTraces": true,
+  "logLevel": "debug",
+  "logTarget": "humanizer",
+  "locatorSalt": "CHANGE_ME",
+  "PORT" : 3000
+}

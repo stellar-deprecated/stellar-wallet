@@ -1,0 +1,11 @@
+{
+  "logLevel": "error",
+  "db" : {
+    "client"   : "mysql",
+    "connection": {
+      "user"     : "root",
+      "database" : "stellar-wallet_test"
+    }
+  },
+  "locatorSalt": "a0cb9980d38791dd506ed797a942a1d0c117556d6c8df4c2b3809ed4f48568d18b4638d0737aafa327ce2191a6d78422a814a977f24fad1e353b298745da49bd"
+}
