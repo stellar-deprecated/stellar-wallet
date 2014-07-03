@@ -1,6 +1,7 @@
-var app = require("../lib/app")
-var hash = require("../lib/util/hash")
-var Promise = require("bluebird")
+var app            = require("../lib/app")
+var hash           = require("../lib/util/hash")
+var stellarExpress = require("stellar-express");
+var Promise        = stellarExpress.Promise;
 require('should');
 
 var helpers = module.exports;
