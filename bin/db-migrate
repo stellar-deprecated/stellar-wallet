@@ -1,7 +1,0 @@
-#! /usr/bin/env bash
-
-if [ -z "$NODE_ENV" ]; then
-  export NODE_ENV="development"
-fi
-
-./node_modules/.bin/db-migrate --config ./config/db.js --env $NODE_ENV $@
