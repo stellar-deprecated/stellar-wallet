@@ -7,9 +7,7 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "debug": "~0.7.4",
     "scrypt-hash": "^1.1.8",
-    "split": "^0.3.0",
     "supertest": "~0.11.0",
     "stellar-express": "git+ssh://git@github.com:stellar/stellar-express.git"
   },

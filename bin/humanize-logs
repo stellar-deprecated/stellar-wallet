@@ -1,7 +1,0 @@
-#!/usr/bin/env node
-var split     = require("split");
-var humanizer = require('../lib/util/json-log-humanizer')
-
-process.stdin
-  .pipe(split(null, humanizer.processLine))
-  .pipe(process.stdout)
