@@ -1,8 +1,8 @@
 var stex            = require("../lib/app").activate().boot();
 
-var hash           = require("../lib/util/hash")
-var stellarExpress = require("stellar-express");
-var Promise        = stellarExpress.Promise;
+var hash    = require("../lib/util/hash")
+var Stex    = require("stex");
+var Promise = Stex.Promise;
 require('should');
 
 var helpers = module.exports;

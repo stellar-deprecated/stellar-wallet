@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "scrypt-hash": "^1.1.8",
-    "stellar-express": "git+ssh://git@github.com:stellar/stellar-express.git"
+    "stex": "git+ssh://git@github.com:stellar/stex.git"
   },
   "devDependencies": {
     "gulp": "^3.7.0",

@@ -48,7 +48,8 @@ gulp.task('nodemon', function () {
 
 // expose the app globals to other tasks
 gulp.task('app', function(next) {
-  require("./lib/app");
+  var stex = equire("./lib/app");
+  stex.activate();
   next();
 });
 
