@@ -84,8 +84,8 @@ gulp.task('db:migrate', function(next) {
 
 
 var shutdown = function() {
-  if(typeof db !== 'undefined') {
-    db.client.pool.destroy();
+  if(typeof stex !== 'undefined') {
+    stex.shutdown();
   }
 };
 

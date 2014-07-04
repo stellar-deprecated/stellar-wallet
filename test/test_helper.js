@@ -1,4 +1,5 @@
-var app            = require("../lib/app")
+var stex            = require("../lib/app").activate().boot();
+
 var hash           = require("../lib/util/hash")
 var stellarExpress = require("stellar-express");
 var Promise        = stellarExpress.Promise;

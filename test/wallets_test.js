@@ -1,7 +1,6 @@
 var helper  = require("./test_helper");
 var request = require('supertest');
 var should  = require('should');
-var app     = require("../lib/app");
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
 
