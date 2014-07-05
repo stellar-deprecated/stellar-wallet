@@ -1,6 +1,7 @@
 var helper  = require("./test_helper");
 var request = helper.stexDev.supertest;
 var should  = helper.stexDev.should;
+var expect  = helper.expect;
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
 
@@ -26,11 +27,9 @@ describe("POST /wallets/show", function() {
     hash.locator(self.params.id).then(function(hashedId) {
 
       self.submit()
-        .expect(function(res) {
-          res.body.should.match({
-            status : "success",
-            data   : { id : hashedId }
-          })
+        .expectBody({
+          status : "success",
+          data   : { id : hashedId }
         })
         .expect(200)
         .end(done);
@@ -42,23 +41,19 @@ describe("POST /wallets/show", function() {
     self.params.id = '-1';
 
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          status : "fail",
-          code   : "not_found"
-        })
+      .expectBody({
+        status : "fail",
+        code   : "not_found"
       })
       .expect(404, done);
   });
 
   it("tells the client when no params are provided", function(done) {
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          "status": "fail",
-          "field":  "id",
-          "code":   "missing"
-        })
+      .expectBody({
+        "status": "fail",
+        "field":  "id",
+        "code":   "missing"
       })
       .expect(400, done);
   });
@@ -94,9 +89,7 @@ describe("POST /wallets/create", function() {
   it("creates a wallet in the db when on the happy path", function(done) {
     this.submit()
       .expect(200)
-      .expect(function(res) {
-        res.body.should.match({ status : "success" })
-      })
+      .expectBody({ status : "success" })
       .end(done);
   });
 
@@ -105,12 +98,10 @@ describe("POST /wallets/create", function() {
 
     this.submit()
       .expect(400)
-      .expect(function(res) {
-        res.body.should.match({ 
-          status: "fail",
-          code:   "already_taken",
-          field:  "id"
-        })
+      .expectBody({ 
+        status: "fail",
+        code:   "already_taken",
+        field:  "id"
       })
       .end(done);
   });
@@ -125,12 +116,10 @@ describe("POST /wallets/create", function() {
 
       this.submit()
         .expect(400)
-        .expect(function(res) {
-          res.body.should.match({ 
-            status: "fail",
-            code:   "missing",
-            field:  prop
-          })
+        .expectBody({ 
+          status: "fail",
+          code:   "missing",
+          field:  prop
         })
         .end(done);
     }
@@ -166,9 +155,7 @@ describe("POST /wallets/update", function() {
     this.submitWithSuccessTest = function() {
       return this.submit()
         .expect(200)
-        .expect(function(res) {
-          res.body.should.match({ status : "success" })
-        });
+        .expectBody({ status : "success" });
     }
 
     done();
@@ -217,11 +204,9 @@ describe("POST /wallets/update", function() {
     this.params.authToken = "wrong!"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({ 
-          status: "fail",
-          code:   "forbidden"
-        })
+      .expectBody({ 
+        status: "fail",
+        code:   "forbidden"
       })
       .end(done);
   });
@@ -259,16 +244,14 @@ describe("POST /wallets/replace", function() {
     var confirmDeletion = function() {
       wallet.get(self.params.oldId)
         .then(function(w) {
-          should.not.exist(w);
+          expect(w).to.not.exist;
         })
         .finally(done)
     };
 
     this.submit()
       .expect(200)
-      .expect(function(res) {
-        res.body.should.match({ status : "success" })
-      })
+      .expectBody({ status : "success" })
       .end(confirmDeletion)
   });
 
@@ -276,9 +259,7 @@ describe("POST /wallets/replace", function() {
     this.params.oldId = "nogood"
     this.submit()
       .expect(404)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "not_found" })
-      })
+      .expectBody({ status : "fail", code: "not_found" })
       .end(done)
   });
 
@@ -286,9 +267,7 @@ describe("POST /wallets/replace", function() {
     this.params.newId = "nogood"
     this.submit()
       .expect(404)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "not_found" })
-      })
+      .expectBody({ status : "fail", code: "not_found" })
       .end(done)
   });
 
@@ -296,9 +275,7 @@ describe("POST /wallets/replace", function() {
     this.params.oldAuthToken = "nogood"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "forbidden" })
-      })
+      .expectBody({ status : "fail", code: "forbidden" })
       .end(done)
   });
 
@@ -306,9 +283,7 @@ describe("POST /wallets/replace", function() {
     this.params.newAuthToken = "nogood"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "forbidden" })
-      })
+      .expectBody({ status : "fail", code: "forbidden" })
       .end(done)
   });
 
@@ -336,11 +311,9 @@ describe("POST /wallets/recover", function() {
     hash.locator(self.params.recoveryId).then(function(hashedRecoveryId) {
 
       self.submit()
-        .expect(function(res) {
-          res.body.should.match({
-            status : "success",
-            data   : { recoveryId : hashedRecoveryId }
-          })
+        .expectBody({
+          status : "success",
+          data   : { recoveryId : hashedRecoveryId }
         })
         .expect(200)
         .end(done);
@@ -352,23 +325,19 @@ describe("POST /wallets/recover", function() {
     self.params.recoveryId = '-1';
 
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          status : "fail",
-          code   : "not_found"
-        })
+      .expectBody({
+        status : "fail",
+        code   : "not_found"
       })
       .expect(404, done);
   });
 
   it("tells the client when no params are provided", function(done) {
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          "status": "fail",
-          "field":  "recoveryId",
-          "code":   "missing"
-        })
+      .expectBody({
+        "status": "fail",
+        "field":  "recoveryId",
+        "code":   "missing"
       })
       .expect(400, done);
   });
@@ -397,9 +366,7 @@ describe("POST /wallets/create_recovery_data", function() {
     this.submitWithSuccessTest = function() {
       return this.submit()
         .expect(200)
-        .expect(function(res) {
-          res.body.should.match({ status : "success" })
-        });
+        .expectBody({ status : "success" });
     }
 
     done();
@@ -437,11 +404,9 @@ describe("POST /wallets/create_recovery_data", function() {
     this.params.authToken = "wrong!"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({
-          status: "fail",
-          code:   "forbidden"
-        })
+      .expectBody({
+        status: "fail",
+        code:   "forbidden"
       })
       .end(done);
   });
@@ -457,12 +422,10 @@ function badHashTest(prop) {
 
     this.submit()
       .expect(400)
-      .expect(function(res) {
-        res.body.should.match({ 
-          status: "fail",
-          code:   "invalid_hash",
-          field:  prop
-        })
+      .expectBody({ 
+        status: "fail",
+        code:   "invalid_hash",
+        field:  prop
       })
       .end(done);
   }

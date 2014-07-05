@@ -39,3 +39,4 @@ beforeEach(function(done) {
 });
 
 helpers.stexDev = require("stex-dev");
+helpers.expect = helpers.stexDev.chai.expect;
