@@ -1,5 +1,8 @@
 var gulp    = require("gulp");
+var stexDev = require("stex-dev");
 var plugins = require('gulp-load-plugins')();
+
+stexDev.gulp();
 
 // composite gulp tasks
 gulp.task('default',  ['test']);
@@ -48,7 +51,7 @@ gulp.task('nodemon', function () {
 
 // expose the app globals to other tasks
 gulp.task('app', function(next) {
-  var stex = equire("./lib/app");
+  var stex = require("./lib/app");
   stex.activate();
   next();
 });
@@ -73,7 +76,7 @@ gulp.task('db:ensure-created', ['app'], function() {
 gulp.task('db:migrate', function(next) {
   var spawn = require('child_process').spawn;
 
-  var proc = spawn("./bin/db-migrate", ["up"], { stdio: 'inherit' });
+  var proc = spawn("stex", ["db-migrate", "up"], { stdio: 'inherit' });
   proc.on('close', function (code) {
     if(code === 0) {
       next();
@@ -82,15 +85,5 @@ gulp.task('db:migrate', function(next) {
     }
   });
 });
-
-
-var shutdown = function() {
-  if(typeof stex !== 'undefined') {
-    stex.shutdown();
-  }
-};
-
-gulp.on('stop', shutdown);
-gulp.on('err', shutdown);
 
 
