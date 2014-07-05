@@ -38,12 +38,4 @@ beforeEach(function(done) {
     .then(function() { done(); });
 });
 
-
-helpers.sha1 = function(data) {
-  var crypto = require("crypto");
-  var sha1   = crypto.createHash('sha1');
-
-  return sha1.update(data).digest("hex");
-};
-
 helpers.stexDev = require("stex-dev");

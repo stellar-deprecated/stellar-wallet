@@ -72,11 +72,11 @@ describe("POST /wallets/create", function() {
       "recoveryId":       "2",
       "authToken":        "2",
       "mainData":         "mains",
-      "mainDataHash":     helper.sha1("mains"),
+      "mainDataHash":     hash.sha1("mains"),
       "recoveryData":     "reco",
-      "recoveryDataHash": helper.sha1("reco"),
+      "recoveryDataHash": hash.sha1("reco"),
       "keychainData":     "keys",
-      "keychainDataHash": helper.sha1("keys")
+      "keychainDataHash": hash.sha1("keys")
     }
 
     this.submit = function() {
@@ -150,9 +150,9 @@ describe("POST /wallets/update", function() {
       "id":               "1",
       "authToken":        "1",
       "mainData":         "mains2",
-      "mainDataHash":     helper.sha1("mains2"),
+      "mainDataHash":     hash.sha1("mains2"),
       "keychainData":     "keys2",
-      "keychainDataHash": helper.sha1("keys2")
+      "keychainDataHash": hash.sha1("keys2")
     }
 
     this.submit = function() {
@@ -383,7 +383,7 @@ describe("POST /wallets/create_recovery_data", function() {
       "authToken":        "4",
       "recoveryId":       "recoveryId",
       "recoveryData":     "foo4",
-      "recoveryDataHash": helper.sha1("foo4")
+      "recoveryDataHash": hash.sha1("foo4")
     }
 
     this.submit = function() {
