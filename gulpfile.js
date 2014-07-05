@@ -6,7 +6,7 @@ var paths   = stexDev.paths;
 
 // composite gulp tasks
 gulp.task('default',  ['test']);
-// gulp.task('dist',     ['']);
+gulp.task('dist',     ['']);
 gulp.task('test',     ['lint', 'mocha']);
 // gulp.task('develop',  ['nodemon']);
 // gulp.task('db:setup', ['db:ensure-created', 'db:migrate']);
@@ -14,12 +14,11 @@ gulp.task('test',     ['lint', 'mocha']);
 // end composite tasks
 
 
+// you can find individual gulp tasks in ./node_modules/stex-dev/lib/gulp.js
+
+
 //component tasks
 
-// gulp.task('watch', function() {
-//   gulp.run('test');
-//   return gulp.watch(paths.watch, ['test']);
-// });
 
 // gulp.task('nodemon', function () {
 //   return plugins.nodemon({ script: './bin/www', ext: 'js', ignore: [] })
