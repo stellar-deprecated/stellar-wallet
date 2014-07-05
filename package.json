@@ -11,15 +11,7 @@
     "stex": "git+ssh://git@github.com:stellar/stex.git"
   },
   "devDependencies": {
-    "stex-dev": "git+ssh://git@github.com:stellar/stex-dev.git",
-    "gulp": "^3.7.0",
-    "gulp-jshint": "^1.6.1",
-    "gulp-load-plugins": "^0.5.1",
-    "gulp-mocha": "^0.4.1",
-    "gulp-nodemon": "^1.0.3",
-    "gulp-spawn-mocha": "^0.1.5",
-    "jshint-stylish": "^0.2.0",
-    "should": "~4.0.4",
-    "supertest": "~0.11.0"
+    "gulp": "^3.8.5",
+    "stex-dev": "git+ssh://git@github.com:stellar/stex-dev.git"
   }
 }

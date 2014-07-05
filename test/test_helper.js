@@ -1,9 +1,7 @@
-var stex            = require("../lib/app").activate().boot();
-
-var hash    = require("../lib/util/hash")
+var stex    = require("../lib/app").activate().boot();
 var Stex    = require("stex");
+var hash    = require("../lib/util/hash")
 var Promise = Stex.Promise;
-require('should');
 
 var helpers = module.exports;
 
@@ -41,10 +39,11 @@ beforeEach(function(done) {
 });
 
 
-
 helpers.sha1 = function(data) {
   var crypto = require("crypto");
   var sha1   = crypto.createHash('sha1');
 
   return sha1.update(data).digest("hex");
 };
+
+helpers.stexDev = require("stex-dev");
