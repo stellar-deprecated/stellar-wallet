@@ -1,6 +1,5 @@
 var helper  = require("./test_helper");
 var request = helper.stexDev.supertest;
-var should  = helper.stexDev.should;
 var expect  = helper.expect;
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
@@ -167,8 +166,8 @@ describe("POST /wallets/update", function() {
 
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.mainData.toString("utf-8").should.equal(self.params.mainData);
-        w.keychainData.toString("utf-8").should.equal(self.params.keychainData);
+        expect(w.mainData.toString("utf-8")).to.equal(self.params.mainData);
+        expect(w.keychainData.toString("utf-8")).to.equal(self.params.keychainData);
       })
       .finally(done)
     });
@@ -180,7 +179,7 @@ describe("POST /wallets/update", function() {
     this.params.recoveryId = "3";
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.recoveryId.should.not.equal("3");
+        expect(w.recoveryId).to.not.equal("3");
       })
       .finally(done)
     });
@@ -193,8 +192,8 @@ describe("POST /wallets/update", function() {
 
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.mainData.toString("utf-8").should.not.equal("mains2");
-        w.keychainData.toString("utf-8").should.equal("keys2");
+        expect(w.mainData.toString("utf-8")).to.not.equal("mains2");
+        expect(w.keychainData.toString("utf-8")).to.equal("keys2");
       })
       .finally(done)
     });
@@ -378,10 +377,12 @@ describe("POST /wallets/create_recovery_data", function() {
 
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.recoveryData.toString("utf-8").should.equal(self.params.recoveryData);
+        expect(w.recoveryData.toString("utf-8")).to.equal(self.params.recoveryData);
+
         hash.locator(self.params.recoveryId).then(function(recoveryId){
-          w.recoveryId.should.equal(recoveryId);
+          expect(w.recoveryId).to.equal(recoveryId);
         });
+
       })
         .finally(done)
     });
@@ -393,7 +394,7 @@ describe("POST /wallets/create_recovery_data", function() {
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
         hash.locator("recoveryId").then(function(recoveryId){
-          w.recoveryId.should.equal(recoveryId);
+          expect(w.recoveryId).to.equal(recoveryId);
         });
       })
         .finally(done)
