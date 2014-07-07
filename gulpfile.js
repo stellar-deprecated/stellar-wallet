@@ -7,7 +7,7 @@ var paths   = stexDev.paths;
 paths.root = __dirname; //HACK: can't think of a better way to expose the app root prior to stex init
 
 gulp.task('default',  ['test']);
-gulp.task('dist',     ['']);
+gulp.task('dist',     []);
 gulp.task('test',     ['lint', 'mocha']);
 gulp.task('db:setup', ['db:ensure-created', 'db:migrate']);
 
