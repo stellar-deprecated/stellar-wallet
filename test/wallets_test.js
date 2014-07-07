@@ -1,7 +1,6 @@
 var helper  = require("./test_helper");
-var request = require('supertest');
-var should  = require('should');
-var app     = require("../lib/app");
+var request = helper.stexDev.supertest;
+var expect  = helper.expect;
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
 
@@ -27,11 +26,9 @@ describe("POST /wallets/show", function() {
     hash.locator(self.params.id).then(function(hashedId) {
 
       self.submit()
-        .expect(function(res) {
-          res.body.should.match({
-            status : "success",
-            data   : { id : hashedId }
-          })
+        .expectBody({
+          status : "success",
+          data   : { id : hashedId }
         })
         .expect(200)
         .end(done);
@@ -43,23 +40,19 @@ describe("POST /wallets/show", function() {
     self.params.id = '-1';
 
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          status : "fail",
-          code   : "not_found"
-        })
+      .expectBody({
+        status : "fail",
+        code   : "not_found"
       })
       .expect(404, done);
   });
 
   it("tells the client when no params are provided", function(done) {
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          "status": "fail",
-          "field":  "id",
-          "code":   "missing"
-        })
+      .expectBody({
+        "status": "fail",
+        "field":  "id",
+        "code":   "missing"
       })
       .expect(400, done);
   });
@@ -73,11 +66,11 @@ describe("POST /wallets/create", function() {
       "recoveryId":       "2",
       "authToken":        "2",
       "mainData":         "mains",
-      "mainDataHash":     helper.sha1("mains"),
+      "mainDataHash":     hash.sha1("mains"),
       "recoveryData":     "reco",
-      "recoveryDataHash": helper.sha1("reco"),
+      "recoveryDataHash": hash.sha1("reco"),
       "keychainData":     "keys",
-      "keychainDataHash": helper.sha1("keys")
+      "keychainDataHash": hash.sha1("keys")
     }
 
     this.submit = function() {
@@ -95,9 +88,7 @@ describe("POST /wallets/create", function() {
   it("creates a wallet in the db when on the happy path", function(done) {
     this.submit()
       .expect(200)
-      .expect(function(res) {
-        res.body.should.match({ status : "success" })
-      })
+      .expectBody({ status : "success" })
       .end(done);
   });
 
@@ -106,12 +97,10 @@ describe("POST /wallets/create", function() {
 
     this.submit()
       .expect(400)
-      .expect(function(res) {
-        res.body.should.match({ 
-          status: "fail",
-          code:   "already_taken",
-          field:  "id"
-        })
+      .expectBody({ 
+        status: "fail",
+        code:   "already_taken",
+        field:  "id"
       })
       .end(done);
   });
@@ -126,12 +115,10 @@ describe("POST /wallets/create", function() {
 
       this.submit()
         .expect(400)
-        .expect(function(res) {
-          res.body.should.match({ 
-            status: "fail",
-            code:   "missing",
-            field:  prop
-          })
+        .expectBody({ 
+          status: "fail",
+          code:   "missing",
+          field:  prop
         })
         .end(done);
     }
@@ -151,9 +138,9 @@ describe("POST /wallets/update", function() {
       "id":               "1",
       "authToken":        "1",
       "mainData":         "mains2",
-      "mainDataHash":     helper.sha1("mains2"),
+      "mainDataHash":     hash.sha1("mains2"),
       "keychainData":     "keys2",
-      "keychainDataHash": helper.sha1("keys2")
+      "keychainDataHash": hash.sha1("keys2")
     }
 
     this.submit = function() {
@@ -167,9 +154,7 @@ describe("POST /wallets/update", function() {
     this.submitWithSuccessTest = function() {
       return this.submit()
         .expect(200)
-        .expect(function(res) {
-          res.body.should.match({ status : "success" })
-        });
+        .expectBody({ status : "success" });
     }
 
     done();
@@ -181,8 +166,8 @@ describe("POST /wallets/update", function() {
 
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.mainData.toString("utf-8").should.equal(self.params.mainData);
-        w.keychainData.toString("utf-8").should.equal(self.params.keychainData);
+        expect(w.mainData.toString("utf-8")).to.equal(self.params.mainData);
+        expect(w.keychainData.toString("utf-8")).to.equal(self.params.keychainData);
       })
       .finally(done)
     });
@@ -194,7 +179,7 @@ describe("POST /wallets/update", function() {
     this.params.recoveryId = "3";
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.recoveryId.should.not.equal("3");
+        expect(w.recoveryId).to.not.equal("3");
       })
       .finally(done)
     });
@@ -207,8 +192,8 @@ describe("POST /wallets/update", function() {
 
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.mainData.toString("utf-8").should.not.equal("mains2");
-        w.keychainData.toString("utf-8").should.equal("keys2");
+        expect(w.mainData.toString("utf-8")).to.not.equal("mains2");
+        expect(w.keychainData.toString("utf-8")).to.equal("keys2");
       })
       .finally(done)
     });
@@ -218,11 +203,9 @@ describe("POST /wallets/update", function() {
     this.params.authToken = "wrong!"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({ 
-          status: "fail",
-          code:   "forbidden"
-        })
+      .expectBody({ 
+        status: "fail",
+        code:   "forbidden"
       })
       .end(done);
   });
@@ -260,16 +243,14 @@ describe("POST /wallets/replace", function() {
     var confirmDeletion = function() {
       wallet.get(self.params.oldId)
         .then(function(w) {
-          should.not.exist(w);
+          expect(w).to.not.exist;
         })
         .finally(done)
     };
 
     this.submit()
       .expect(200)
-      .expect(function(res) {
-        res.body.should.match({ status : "success" })
-      })
+      .expectBody({ status : "success" })
       .end(confirmDeletion)
   });
 
@@ -277,9 +258,7 @@ describe("POST /wallets/replace", function() {
     this.params.oldId = "nogood"
     this.submit()
       .expect(404)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "not_found" })
-      })
+      .expectBody({ status : "fail", code: "not_found" })
       .end(done)
   });
 
@@ -287,9 +266,7 @@ describe("POST /wallets/replace", function() {
     this.params.newId = "nogood"
     this.submit()
       .expect(404)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "not_found" })
-      })
+      .expectBody({ status : "fail", code: "not_found" })
       .end(done)
   });
 
@@ -297,9 +274,7 @@ describe("POST /wallets/replace", function() {
     this.params.oldAuthToken = "nogood"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "forbidden" })
-      })
+      .expectBody({ status : "fail", code: "forbidden" })
       .end(done)
   });
 
@@ -307,9 +282,7 @@ describe("POST /wallets/replace", function() {
     this.params.newAuthToken = "nogood"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({ status : "fail", code: "forbidden" })
-      })
+      .expectBody({ status : "fail", code: "forbidden" })
       .end(done)
   });
 
@@ -337,11 +310,9 @@ describe("POST /wallets/recover", function() {
     hash.locator(self.params.recoveryId).then(function(hashedRecoveryId) {
 
       self.submit()
-        .expect(function(res) {
-          res.body.should.match({
-            status : "success",
-            data   : { recoveryId : hashedRecoveryId }
-          })
+        .expectBody({
+          status : "success",
+          data   : { recoveryId : hashedRecoveryId }
         })
         .expect(200)
         .end(done);
@@ -353,23 +324,19 @@ describe("POST /wallets/recover", function() {
     self.params.recoveryId = '-1';
 
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          status : "fail",
-          code   : "not_found"
-        })
+      .expectBody({
+        status : "fail",
+        code   : "not_found"
       })
       .expect(404, done);
   });
 
   it("tells the client when no params are provided", function(done) {
     this.submit()
-      .expect(function(res) {
-        res.body.should.match({
-          "status": "fail",
-          "field":  "recoveryId",
-          "code":   "missing"
-        })
+      .expectBody({
+        "status": "fail",
+        "field":  "recoveryId",
+        "code":   "missing"
       })
       .expect(400, done);
   });
@@ -384,7 +351,7 @@ describe("POST /wallets/create_recovery_data", function() {
       "authToken":        "4",
       "recoveryId":       "recoveryId",
       "recoveryData":     "foo4",
-      "recoveryDataHash": helper.sha1("foo4")
+      "recoveryDataHash": hash.sha1("foo4")
     }
 
     this.submit = function() {
@@ -398,9 +365,7 @@ describe("POST /wallets/create_recovery_data", function() {
     this.submitWithSuccessTest = function() {
       return this.submit()
         .expect(200)
-        .expect(function(res) {
-          res.body.should.match({ status : "success" })
-        });
+        .expectBody({ status : "success" });
     }
 
     done();
@@ -412,10 +377,12 @@ describe("POST /wallets/create_recovery_data", function() {
 
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
-        w.recoveryData.toString("utf-8").should.equal(self.params.recoveryData);
+        expect(w.recoveryData.toString("utf-8")).to.equal(self.params.recoveryData);
+
         hash.locator(self.params.recoveryId).then(function(recoveryId){
-          w.recoveryId.should.equal(recoveryId);
+          expect(w.recoveryId).to.equal(recoveryId);
         });
+
       })
         .finally(done)
     });
@@ -427,7 +394,7 @@ describe("POST /wallets/create_recovery_data", function() {
     this.submitWithSuccessTest().end(function() {
       wallet.get(self.params.id).then(function(w) {
         hash.locator("recoveryId").then(function(recoveryId){
-          w.recoveryId.should.equal(recoveryId);
+          expect(w.recoveryId).to.equal(recoveryId);
         });
       })
         .finally(done)
@@ -438,11 +405,9 @@ describe("POST /wallets/create_recovery_data", function() {
     this.params.authToken = "wrong!"
     this.submit()
       .expect(403)
-      .expect(function(res) {
-        res.body.should.match({
-          status: "fail",
-          code:   "forbidden"
-        })
+      .expectBody({
+        status: "fail",
+        code:   "forbidden"
       })
       .end(done);
   });
@@ -458,12 +423,10 @@ function badHashTest(prop) {
 
     this.submit()
       .expect(400)
-      .expect(function(res) {
-        res.body.should.match({ 
-          status: "fail",
-          code:   "invalid_hash",
-          field:  prop
-        })
+      .expectBody({ 
+        status: "fail",
+        code:   "invalid_hash",
+        field:  prop
       })
       .end(done);
   }

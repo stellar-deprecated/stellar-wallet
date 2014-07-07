@@ -1,7 +1,7 @@
-var app = require("../lib/app")
-var hash = require("../lib/util/hash")
-var Promise = require("bluebird")
-require('should');
+var stex    = require("../lib/app").activate().boot();
+var Stex    = require("stex");
+var hash    = require("../lib/util/hash")
+var Promise = Stex.Promise;
 
 var helpers = module.exports;
 
@@ -38,11 +38,5 @@ beforeEach(function(done) {
     .then(function() { done(); });
 });
 
-
-
-helpers.sha1 = function(data) {
-  var crypto = require("crypto");
-  var sha1   = crypto.createHash('sha1');
-
-  return sha1.update(data).digest("hex");
-};
+helpers.stexDev = require("stex-dev");
+helpers.expect = helpers.stexDev.chai.expect;
