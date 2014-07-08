@@ -5,3 +5,4 @@ node_modules
 /fbgive/fbgive.log
 /federation/config.js
 .DS_Store
+tmp/
