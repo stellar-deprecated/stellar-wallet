@@ -1,4 +1,3 @@
-var stex    = require("../lib/app").activate().boot();
 var Stex    = require("stex");
 var hash    = require("../lib/util/hash")
 var Promise = Stex.Promise;
@@ -37,6 +36,15 @@ beforeEach(function(done) {
     .then(loadFixtures)
     .then(function() { done(); });
 });
+
+before(function(done) {
+  require("../lib/app")
+    .call('activate')
+    .call('boot')
+    .then(function(){ 
+      done(); 
+    });
+})
 
 helpers.stexDev = require("stex-dev");
 helpers.expect = helpers.stexDev.chai.expect;
