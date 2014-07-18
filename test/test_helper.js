@@ -40,7 +40,6 @@ beforeEach(function(done) {
 before(function(done) {
   require("../lib/app")
     .call('activate')
-    .call('boot')
     .then(function(){ 
       done(); 
     });
