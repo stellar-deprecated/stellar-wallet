@@ -1,4 +1,4 @@
-var dbm = require('db-migrate');
+var dbm = require('stex').dbMigrate;
 var type = dbm.dataType;
 
 exports.up = function(db, callback) {
