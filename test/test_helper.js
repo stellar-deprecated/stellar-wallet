@@ -39,7 +39,7 @@ beforeEach(function(done) {
 
 before(function(done) {
   require("../lib/app")
-    .call('activate')
+    .init()
     .then(function(){ 
       done(); 
     });
