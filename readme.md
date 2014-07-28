@@ -1,5 +1,7 @@
 # Stellar Wallet
 
+Stores encrypted data. The wallet server can't decrypt the data. Used by https://github.com/stellar/stellar-client to save the user's secret keys. 
+
 
 
 ## Getting Started
