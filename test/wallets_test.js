@@ -212,6 +212,21 @@ describe("POST /wallets/update", function() {
 
   it("fails when the provided mainHash doesn't verify the mainData",         badHashTest("mainData"));
   it("fails when the provided keychainHash doesn't verify the keychainData", badHashTest("keychainData"));
+
+  it("succeeds with inputs of 1mb in size", function(done) {
+    var self = this;
+
+    this.params.mainData     = helper.makeString(1 * 1024 * 1024); //1 mb
+    this.params.mainDataHash = hash.sha1(this.params.mainData);
+
+    this.submitWithSuccessTest().end(function() {
+      wallet.get(self.params.id).then(function(w) {
+
+        expect(w.mainData.length).to.equal(self.params.mainData.length);
+      })
+      .finally(done)
+    });
+  });
 });
 
 

@@ -31,6 +31,14 @@ var loadFixtures = function() {
   ]);
 }
 
+helpers.makeString = function(size) {
+  var x = "";
+  for(var i = 0; i < size; i++) {
+    x += "a";
+  }
+  return x;
+}
+
 beforeEach(function(done) {
   clearDb()
     .then(loadFixtures)
