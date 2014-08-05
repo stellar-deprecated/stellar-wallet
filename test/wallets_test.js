@@ -221,6 +221,17 @@ describe("POST /wallets/update", function() {
       .end(done);
   });
 
+  it("fails when the entire body is blank", function(done) {
+    this.params = {};
+    this.submit()
+      .expect(404)
+      .expectBody({ 
+        status: "fail",
+        code:   "not_found"
+      })
+      .end(done);
+  });
+
   it("fails when the provided mainHash doesn't verify the mainData",         badHashTest("mainData"));
   it("fails when the provided keychainHash doesn't verify the keychainData", badHashTest("keychainData"));
 
@@ -324,7 +335,7 @@ describe("POST /wallets/replace", function() {
       .end(done)
   });
 
-  
+
   
   it("fails when the provided newAuthToken is blank", function(done) {
     delete this.params.newAuthToken;
