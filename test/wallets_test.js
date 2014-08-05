@@ -210,6 +210,17 @@ describe("POST /wallets/update", function() {
       .end(done);
   });
 
+  it("fails when the provided authToken is blank", function(done) {
+    delete this.params.authToken;
+    this.submit()
+      .expect(403)
+      .expectBody({ 
+        status: "fail",
+        code:   "forbidden"
+      })
+      .end(done);
+  });
+
   it("fails when the provided mainHash doesn't verify the mainData",         badHashTest("mainData"));
   it("fails when the provided keychainHash doesn't verify the keychainData", badHashTest("keychainData"));
 
@@ -293,12 +304,37 @@ describe("POST /wallets/replace", function() {
       .end(done)
   });
 
+
+  it("fails when the provided oldAuthToken is blank", function(done) {
+    delete this.params.oldAuthToken;
+    this.submit()
+      .expect(403)
+      .expectBody({ 
+        status: "fail",
+        code:   "forbidden"
+      })
+      .end(done);
+  });
+
   it("fails when the provided newAuthToken does not match the stored token from the new wallet", function(done) {
     this.params.newAuthToken = "nogood"
     this.submit()
       .expect(403)
       .expectBody({ status : "fail", code: "forbidden" })
       .end(done)
+  });
+
+  
+  
+  it("fails when the provided newAuthToken is blank", function(done) {
+    delete this.params.newAuthToken;
+    this.submit()
+      .expect(403)
+      .expectBody({ 
+        status: "fail",
+        code:   "forbidden"
+      })
+      .end(done);
   });
 
 });
