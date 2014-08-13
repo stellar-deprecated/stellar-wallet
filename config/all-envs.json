@@ -14,5 +14,11 @@
     "host": "localhost",
     "port": 6379,
     "db": 0
+  },
+
+  "loginFailureTracker": {
+    "expirationTime" : 600,
+    "allowedFailures" : 5,
+    "sleepTime": 250
   }
 }
