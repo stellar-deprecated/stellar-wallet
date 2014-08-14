@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "scrypt-hash": "^1.1.8",
-    "stex": "git+ssh://git@github.com:stellar/stex.git#master"
+    "stex": "git+https://github.com/stellar/stex.git#master"
   },
   "devDependencies": {
     "gulp": "^3.8.5",
-    "stex-dev": "git+ssh://git@github.com:stellar/stex-dev.git"
+    "stex-dev": "git+https://github.com/stellar/stex-dev.git#master"
   }
 }
