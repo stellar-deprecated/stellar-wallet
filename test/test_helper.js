@@ -48,7 +48,8 @@ beforeEach(function(done) {
 before(function(done) {
   require("../lib/app")
     .init()
-    .then(function(){ 
+    .then(function(stex){ 
+      stex.activate();
       done(); 
     });
 })
