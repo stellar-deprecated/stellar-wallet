@@ -8,5 +8,6 @@
   "logTarget":       "humanizer",
   "locatorSalt":     "CHANGE_ME",
   "PORT":            3000,
-  "bodyLimit":       "2mb"
+  "bodyLimit":       "2mb",
+  "useNewRelic":     false
 }

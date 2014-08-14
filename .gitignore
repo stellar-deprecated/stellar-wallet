@@ -6,3 +6,4 @@ node_modules
 /federation/config.js
 .DS_Store
 tmp/
+newrelic_agent.log
