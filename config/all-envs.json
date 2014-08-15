@@ -17,7 +17,7 @@
   },
 
   "loginFailureTracker": {
-    "expirationTime" : 600,
+    "expirationTime" : 60,
     "allowedFailures" : 5,
     "sleepTime": 250
   }
