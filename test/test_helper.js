@@ -8,6 +8,10 @@ var clearDb = function() {
   return db.raw("TRUNCATE TABLE wallets");
 }
 
+var clearRedis = function() {
+  return stex.redis.flushdbAsync();
+}
+
 var makeWallet = function(params) {
   return Promise
     .props({ 
@@ -41,6 +45,7 @@ helpers.makeString = function(size) {
 
 beforeEach(function(done) {
   clearDb()
+    .then(clearRedis)
     .then(loadFixtures)
     .then(function() { done(); });
 });
@@ -48,10 +53,12 @@ beforeEach(function(done) {
 before(function(done) {
   require("../lib/app")
     .init()
-    .then(function(){ 
+    .then(function(stex){ 
+      stex.activate();
       done(); 
     });
 })
 
+helpers.Stex    = Stex;
 helpers.stexDev = require("stex-dev");
-helpers.expect = helpers.stexDev.chai.expect;
+helpers.expect  = helpers.stexDev.chai.expect;

@@ -3,6 +3,7 @@ var request = helper.stexDev.supertest;
 var expect  = helper.expect;
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
+var _       = helper.Stex._;
 
 describe("POST /wallets/show", function() {
   beforeEach(function(done) {
@@ -55,6 +56,27 @@ describe("POST /wallets/show", function() {
         "code":   "missing"
       })
       .expect(400, done);
+  });
+
+
+  it("locks a user out after the configured number of failed attempts", function(done) {
+    var self = this;
+    self.params.id = '-1';
+
+    var submitBad = function(timesLeft, cb) {
+      if(timesLeft > 0) {
+        self.submit().end(function() {
+          submitBad(timesLeft - 1, cb);
+        });
+      } else {
+        cb();
+      }
+    }
+
+    submitBad(6, function() {
+      self.params.id = '1';
+      self.submit().expect(404).end(done);
+    });
   });
 });
 

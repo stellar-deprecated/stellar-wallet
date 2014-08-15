@@ -9,5 +9,16 @@
   "locatorSalt":     "CHANGE_ME",
   "PORT":            3000,
   "bodyLimit":       "2mb",
-  "useNewRelic":     false
+  "useNewRelic":     false,
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "db": 0
+  },
+
+  "loginFailureTracker": {
+    "expirationTime" : 60,
+    "allowedFailures" : 5,
+    "sleepTime": 250
+  }
 }
