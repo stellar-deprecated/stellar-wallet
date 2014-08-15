@@ -8,17 +8,18 @@ var _       = helper.Stex._;
 describe("POST /wallets/show", function() {
   beforeEach(function(done) {
     this.params = {}
-
+    this.referer = "https://launch.stellar.org/#login"
     this.submit = function() {
       return request(app)
         .post('/wallets/show')
         .send(this.params)
+        .set("Referer", this.referer)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
     }
 
     done();
-  })
+  });
 
   it("retrieves the wallet properly", function(done) {
     var self = this;
@@ -34,7 +35,7 @@ describe("POST /wallets/show", function() {
         .expect(200)
         .end(done);
     });
-  })
+  });
   
   it("fails to find a wallet when none exists for the id", function(done) {
     var self = this;
@@ -76,6 +77,61 @@ describe("POST /wallets/show", function() {
     submitBad(6, function() {
       self.params.id = '1';
       self.submit().expect(404).end(done);
+    });
+  });
+
+  var expectNoRefererWarning = function() {
+    expect(log.warn.callCount).to.eq(0);
+  };
+
+  var expectRefererWarning = function() {
+      expect(log.warn.callCount).to.be.at.least(1);
+      expect(log.warn.firstCall.args[0]).to.have.properties({event: "bad_referer"});
+
+  };
+
+  it("doesn't log a warning when the referer is as expected", function(done) {
+    this.sinon.spy(log, 'warn');
+    this.referer = "https://launch.stellar.org/#login"
+    this.submit().end(function() {
+      expectNoRefererWarning();
+      done();
+    });
+  });
+
+  it("doesn't log a warning when the referer is localhost", function(done) {
+    this.sinon.spy(log, 'warn');
+    this.referer = "http://localhost:8000"
+    this.submit().end(function() {
+      expectNoRefererWarning();
+      done();
+    });
+  });
+
+  it("logs a warning when the request has no referer", function(done) {
+    this.sinon.spy(log, 'warn');
+    this.referer = ""
+    this.submit().end(function() {
+      expectRefererWarning()
+      done();
+    });
+  });
+
+  it("logs a warning when the referer is a valid url but is from an unexpected domain", function(done) {
+    this.sinon.spy(log, 'warn');
+    this.referer = "https://strdice.com/#login"
+    this.submit().end(function() {
+      expectRefererWarning()
+      done();
+    });
+  });
+
+  it("logs a warning when the referer is an invalid url", function(done) {
+    this.sinon.spy(log, 'warn');
+    this.referer = "(╯°□°)╯︵ ┻━┻"
+    this.submit().end(function() {
+      expectRefererWarning()
+      done();
     });
   });
 });

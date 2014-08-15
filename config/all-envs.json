@@ -20,5 +20,7 @@
     "expirationTime" : 60,
     "allowedFailures" : 5,
     "sleepTime": 250
-  }
+  },
+
+  "expectedRefererDomain": "launch.stellar.org" 
 }
