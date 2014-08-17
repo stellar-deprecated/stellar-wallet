@@ -101,22 +101,24 @@ describe("POST /v2/wallets/show", function() {
 describe("POST /v2/wallets/create", function() {
 
   beforeEach(function(done) {
+    this.params = {
+      username:         "username",
+      authToken:        "authtoken",
+      updateKey:        "updatekey", //TODO: make me a valid AES-256 key
+      salt:             "salt",
+      kdfParams:        "kdfparams",
+      mainData:         "mains",
+      mainDataHash:     hash.sha1("mains"),
+      keychainData:     "keys",
+      keychainDataHash: hash.sha1("keys")
+    };
+
     this.submit = function(params) {
-      _.defaults(params, {
-        username:         "username",
-        authToken:        "authtoken",
-        updateKey:        "updatekey", //TODO: make me a valid AES-256 key
-        salt:             "salt",
-        kdfParams:        "kdfparams",
-        mainData:         "mains",
-        mainDataHash:     hash.sha1("mains"),
-        keychainData:     "keys",
-        keychainDataHash: hash.sha1("keys")
-      });
+      _.extend(this.params, params);
 
       return request(app)
         .post('/v2/wallets/create')
-        .send(params)
+        .send(this.params)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
     }
@@ -134,11 +136,22 @@ describe("POST /v2/wallets/create", function() {
 
   var blankTest = function(prop) {
     return function() {
-      var params = {}
-      params[prop] = null;
-      return this.submit().expect(400)
-    }
-  }
+      delete this.params[prop]
+      //TODO: check for missing_field code
+      return this.submit().expect(400);
+    };
+  };
+
+
+  var badHashTest = function (prop) {
+    return function() {
+      hashProp = prop + "Hash";
+      this.params[hashProp] = "badhash";
+
+      //TODO: check for invalid_hash code
+      return this.submit().expect(400);
+    };
+  };
 
   it("fails when a username isn't provided",      blankTest("username"));
   it("fails when a salt isn't provided",          blankTest("salt"));
@@ -147,4 +160,8 @@ describe("POST /v2/wallets/create", function() {
   it("fails when a updateKey isn't provided",     blankTest("updateKey"));
   it("fails when a mainData isn't provided",      blankTest("mainData"));
   it("fails when a keychainData isn't provided",  blankTest("keychainData"));
+
+  it("fails when the provided mainDataHash doesn't verify the mainData",         badHashTest("mainData"));
+  it("fails when the provided keychainDataHash doesn't verify the keychainData", badHashTest("keychainData"));
+
 });
