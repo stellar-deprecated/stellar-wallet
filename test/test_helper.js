@@ -7,8 +7,11 @@ var testHelper  = module.exports;
 testHelper.Stex = Stex;
 
 var clearDb = function() {
-  return db.raw("TRUNCATE TABLE wallets");
-};
+  return Promise.all([
+    db.raw("TRUNCATE TABLE wallets"),
+    db.raw("TRUNCATE TABLE wallets_v2"),
+  ]);
+}
 
 var clearRedis = function() {
   return stex.redis.flushdbAsync();
@@ -29,11 +32,36 @@ var makeWallet = function(params) {
     });
 };
 
+var makeWalletV2 = function(params) {
+  return db("wallets_v2").insert({
+    lockVersion:   0,
+    createdAt:     new Date(),
+    updatedAt:     new Date(),
+
+    updateKey:     "updatekey",
+    authToken:     hash.sha2("authtoken"),
+
+    username:      params.username,
+    salt:          "somesaltgoeshere",
+    kdfParams:     JSON.stringify({
+      algorithm: "scrypt",
+      n: Math.pow(2,16),
+      r: 8,
+      p: 1
+    }),
+
+    mainData:      params.mainData, 
+    keychainData:  params.keychainData
+  });
+};
+
 var loadFixtures = function() {
   return Promise.all([
     makeWallet({ id:'1', recoveryId:'1', authToken:'1', mainData:'foo', recoveryData:'foo', keychainData:'foo' }),
     makeWallet({ id:'3', recoveryId:'3', authToken:'3', mainData:'foo3', recoveryData:'foo3', keychainData:'foo3' }),
-    makeWallet({ id:'4', authToken:'4', mainData:'foo4', keychainData:'foo4' })
+    makeWallet({ id:'4', authToken:'4', mainData:'foo4', keychainData:'foo4' }),
+
+    makeWalletV2({username: "scott", mainData:'foo', keychainData:'foo'}),
   ]);
 };
 
