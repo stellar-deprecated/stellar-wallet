@@ -7,6 +7,7 @@
     "test": "NODE_ENV=test gulp db:setup && gulp test"
   },
   "dependencies": {
+    "notp": "^2.0.2",
     "scrypt-hash": "^1.1.8",
     "stex": "git+https://github.com/stellar/stex.git#master"
   },

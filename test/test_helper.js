@@ -51,7 +51,8 @@ var makeWalletV2 = function(params) {
     }),
 
     mainData:      params.mainData, 
-    keychainData:  params.keychainData
+    keychainData:  params.keychainData,
+    totpCode:      params.totpCode
   });
 };
 
@@ -63,6 +64,7 @@ var loadFixtures = function() {
 
     makeWalletV2({username: "scott", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "david", mainData:'foo', keychainData:'foo'}),
+    makeWalletV2({username: "mfa",   mainData:'foo', keychainData:'foo', totpCode:'mytotpcode'}),
   ]);
 };
 

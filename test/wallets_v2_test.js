@@ -5,6 +5,7 @@ var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
 var Promise = helper.Stex.Promise;
 var _       = helper.Stex._;
+var notp    = require("notp");
 
 describe("POST /v2/login_params/show", function() {
   beforeEach(function(done) {
@@ -71,6 +72,10 @@ describe.only("POST /v2/wallets/show", function() {
     return this.submit({username:"scott", authToken:"authtoken"}).expect(200);
   });
 
+  it("retrieves the wallet properly with totpToken", function() {
+    return this.submit({username:"mfa", authToken:"authtoken", totpToken:notp.totp.gen("mytotpcode", {})}).expect(200);
+  });
+
   it("fails with 403 when the username is not found", function() {
     return this.submit({username:"missing", authToken:"authtoken"}).expect(403);
   });
@@ -82,11 +87,16 @@ describe.only("POST /v2/wallets/show", function() {
   it("locks an ip address out after the configured number of failed login attempts", function() {
     var self = this;
     
-    this.lockout("scott").then(function() {
+    return this.lockout("scott").then(function() {
       return Promise.all([
-        self.submit({username:"scott", authToken:"authtoken"}).expect(404),
+        self.submit({username:"scott", authToken:"authtoken"}).expect(403),
         self.submit({username:"david", authToken:"authtoken"}).expect(200),
       ]);
     });
-  })
+  });
+
+  it("fails when the totpToken is required and is wrong", function() {
+    return this.submit({username:"mfa", authToken:"authtoken", totpToken:"wrongvalue"}).expect(403)
+  });
+
 });
