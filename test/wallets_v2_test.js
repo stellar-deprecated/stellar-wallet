@@ -131,4 +131,20 @@ describe("POST /v2/wallets/create", function() {
           .to.eventually.exist;
       });
   });
+
+  var blankTest = function(prop) {
+    return function() {
+      var params = {}
+      params[prop] = null;
+      return this.submit().expect(400)
+    }
+  }
+
+  it("fails when a username isn't provided",      blankTest("username"));
+  it("fails when a salt isn't provided",          blankTest("salt"));
+  it("fails when a kdfParams isn't provided",     blankTest("kdfParams"));
+  it("fails when a authToken isn't provided",     blankTest("authToken"));
+  it("fails when a updateKey isn't provided",     blankTest("updateKey"));
+  it("fails when a mainData isn't provided",      blankTest("mainData"));
+  it("fails when a keychainData isn't provided",  blankTest("keychainData"));
 });
