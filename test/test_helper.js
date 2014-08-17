@@ -42,7 +42,7 @@ var makeWalletV2 = function(params) {
     authToken:     hash.sha2("authtoken"),
 
     username:      params.username,
-    salt:          "somesaltgoeshere",
+    salt:          new Buffer("somesaltgoeshere"),
     kdfParams:     JSON.stringify({
       algorithm: "scrypt",
       n: Math.pow(2,16),
@@ -62,6 +62,7 @@ var loadFixtures = function() {
     makeWallet({ id:'4', authToken:'4', mainData:'foo4', keychainData:'foo4' }),
 
     makeWalletV2({username: "scott", mainData:'foo', keychainData:'foo'}),
+    makeWalletV2({username: "david", mainData:'foo', keychainData:'foo'}),
   ]);
 };
 

@@ -42,3 +42,51 @@ describe("POST /v2/login_params/show", function() {
     });
   });
 });
+
+describe.only("POST /v2/wallets/show", function() {
+  beforeEach(function(done) {
+    this.submit = function(params) {
+      return request(app)
+        .post('/v2/wallets/show')
+        .send(params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+    };
+
+    this.lockout = function(username) {
+      return Promise.all([
+        this.submit({username:username, authToken:"somewrongtoken"}).expect(403),
+        this.submit({username:username, authToken:"somewrongtoken"}).expect(403),
+        this.submit({username:username, authToken:"somewrongtoken"}).expect(403),
+        this.submit({username:username, authToken:"somewrongtoken"}).expect(403),
+        this.submit({username:username, authToken:"somewrongtoken"}).expect(403),
+        this.submit({username:username, authToken:"somewrongtoken"}).expect(403),
+      ]);
+    };
+
+    done();
+  });
+
+  it("retrieves the wallet properly", function() {
+    return this.submit({username:"scott", authToken:"authtoken"}).expect(200);
+  });
+
+  it("fails with 403 when the username is not found", function() {
+    return this.submit({username:"missing", authToken:"authtoken"}).expect(403);
+  });
+
+  it("fails with 403 when the authToken is incorrect", function() {
+    return this.submit({username:"scott", authToken:"somewrongtoken"}).expect(403);
+  });
+
+  it("locks an ip address out after the configured number of failed login attempts", function() {
+    var self = this;
+    
+    this.lockout("scott").then(function() {
+      return Promise.all([
+        self.submit({username:"scott", authToken:"authtoken"}).expect(404),
+        self.submit({username:"david", authToken:"authtoken"}).expect(200),
+      ]);
+    });
+  })
+});
