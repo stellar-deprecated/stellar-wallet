@@ -22,7 +22,7 @@ exports.up = function(db, callback) {
 
   }, function() {
     db.addIndex('wallets_v2', 'username_unique', ['username'], true, function() {
-      db.addIndex('wallets_v2', 'authToken', ['authToken'], true, callback);
+      db.addIndex('wallets_v2', 'authToken', ['authToken'], false, callback);
     });
   });
 };
