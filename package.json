@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "notp": "^2.0.2",
+    "scmp": "0.0.3",
     "scrypt-hash": "^1.1.8",
     "stex": "git+https://github.com/stellar/stex.git#master"
   },
