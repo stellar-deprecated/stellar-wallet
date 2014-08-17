@@ -1,11 +1,11 @@
-var helper  = require("./test_helper");
-var request = require("supertest-as-promised");
-var expect  = helper.expect;
-var wallet  = require("../lib/models/wallet");
-var hash    = require("../lib/util/hash");
-var Promise = helper.Stex.Promise;
-var _       = helper.Stex._;
-var notp    = require("notp");
+var helper   = require("./test_helper");
+var request  = require("supertest-as-promised");
+var expect   = helper.expect;
+var walletV2 = require("../lib/models/wallet_v2");
+var hash     = require("../lib/util/hash");
+var Promise  = helper.Stex.Promise;
+var _        = helper.Stex._;
+var notp     = require("notp");
 
 describe("POST /v2/login_params/show", function() {
   beforeEach(function(done) {
@@ -44,7 +44,7 @@ describe("POST /v2/login_params/show", function() {
   });
 });
 
-describe.only("POST /v2/wallets/show", function() {
+describe("POST /v2/wallets/show", function() {
   beforeEach(function(done) {
     this.submit = function(params) {
       return request(app)
@@ -95,5 +95,40 @@ describe.only("POST /v2/wallets/show", function() {
   it("fails when the totpToken is required and is wrong", function() {
     return this.submit({username:"mfa", authToken:"authtoken", totpToken:"wrongvalue"}).expect(403)
   });
+});
 
+
+describe("POST /v2/wallets/create", function() {
+
+  beforeEach(function(done) {
+    this.submit = function(params) {
+      _.defaults(params, {
+        username:         "username",
+        authToken:        "authtoken",
+        updateKey:        "updatekey", //TODO: make me a valid AES-256 key
+        salt:             "salt",
+        kdfParams:        "kdfparams",
+        mainData:         "mains",
+        mainDataHash:     hash.sha1("mains"),
+        keychainData:     "keys",
+        keychainDataHash: hash.sha1("keys")
+      });
+
+      return request(app)
+        .post('/v2/wallets/create')
+        .send(params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+    }
+
+    done();
+  });
+
+  it("creates a wallet in the db when on the happy path", function() {
+    return this.submit({})
+      .then(function(rep) {
+        return expect(walletV2.getWithAuthorization("username", "authtoken"))
+          .to.eventually.exist;
+      });
+  });
 });
