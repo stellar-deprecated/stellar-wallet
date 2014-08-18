@@ -64,6 +64,8 @@ describe("POST /wallets/show", function() {
     var self = this;
     self.params.id = '-1';
 
+    this.sinon.spy(log, 'warn');
+
     var submitBad = function(timesLeft, cb) {
       if(timesLeft > 0) {
         self.submit().end(function() {
@@ -75,10 +77,14 @@ describe("POST /wallets/show", function() {
     }
 
     submitBad(6, function() {
+      expect(log.warn.callCount).to.be.at.least(1);
+      expect(log.warn.firstCall.args[0]).to.have.properties({event: "lockout", lockedOutId: "127.0.0.1"});
+
       self.params.id = '1';
       self.submit().expect(404).end(done);
     });
   });
+
 
   var expectNoRefererWarning = function() {
     expect(log.warn.callCount).to.eq(0);
@@ -134,6 +140,7 @@ describe("POST /wallets/show", function() {
       done();
     });
   });
+
 });
 
 describe("POST /wallets/create", function() {
