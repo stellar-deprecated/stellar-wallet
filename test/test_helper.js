@@ -3,6 +3,11 @@ var hash    = require("../lib/util/hash")
 var Promise = Stex.Promise;
 
 var helpers = module.exports;
+helpers.Stex    = Stex;
+helpers.stexDev = require("stex-dev");
+helpers.expect  = helpers.stexDev.chai.expect;
+
+helpers.stexDev.sinon.init();
 
 var clearDb = function() {
   return db.raw("TRUNCATE TABLE wallets");
@@ -58,7 +63,3 @@ before(function(done) {
       done(); 
     });
 })
-
-helpers.Stex    = Stex;
-helpers.stexDev = require("stex-dev");
-helpers.expect  = helpers.stexDev.chai.expect;
