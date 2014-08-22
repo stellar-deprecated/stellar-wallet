@@ -22,7 +22,7 @@
     "stex": {
       "version": "0.1.0",
       "from": "git+https://github.com/stellar/stex.git#master",
-      "resolved": "git+https://github.com/stellar/stex.git#6754738f9638a8fa2d8183a89796bb2740ae363f",
+      "resolved": "git+https://github.com/stellar/stex.git#88e32ebe801381b62130852778e87d65db3548ae",
       "dependencies": {
         "bluebird": {
           "version": "2.3.0",
