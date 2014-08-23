@@ -1,9 +1,7 @@
 node_modules
 */*.log
 /config.js
-/fbgive/config.js
-/fbgive/fbgive.log
-/federation/config.js
 .DS_Store
 tmp/
 newrelic_agent.log
+/docs
