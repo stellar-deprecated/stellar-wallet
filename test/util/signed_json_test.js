@@ -16,7 +16,7 @@ var SIGNATURE_STRING = nacl.util.encodeBase64(SIGNATURE);
 var KEYPAIR_STRINGS  = {
   publicKey: nacl.util.encodeBase64(KEYPAIR.publicKey),
   secretKey: nacl.util.encodeBase64(KEYPAIR.secretKey),
-}
+};
 
 describe("signedJson.read", function() {
   
@@ -41,14 +41,46 @@ describe("signedJson.read", function() {
     done();
   });
 
-  it("with truncated text");
-  it("with invalid corrupted signature");
-  it("with invalid wrong public key");
+  it("should throw BadSignature with truncated text", function(done) {
+    var truncatedText = function(){ 
+      signedJson.read(
+        MESSAGE_STRING.substring(0, MESSAGE_STRING.length - 3), 
+        SIGNATURE_STRING, 
+        KEYPAIR_STRINGS.publicKey
+      ); 
+    };
 
-})
+    expect(truncatedText).to.throw(signedJson.errors.BadSignature);
+    done();
+  });
 
+  it("should throw BadSignature with invalid corrupted signature", function(done) {
+    var newSignatureString = "a" + SIGNATURE_STRING.slice(1);
 
-describe("signedJson.write", function() {
-  
+    var badSignature = function() { signedJson.read(MESSAGE_STRING, newSignatureString, KEYPAIR_STRINGS.publicKey); };
 
-})
+    expect(badSignature).to.throw(signedJson.errors.BadSignature);
+
+    done();
+  });
+
+  it("should throw BadSignature with invalid wrong public key", function(done) {
+    var publicKeyString = "a" + KEYPAIR_STRINGS.publicKey.slice(1);
+
+    var badKey = function() { signedJson.read(MESSAGE_STRING, SIGNATURE_STRING, publicKeyString); };
+
+    expect(badKey).to.throw(signedJson.errors.BadSignature);
+
+    done();
+  });
+
+  it("should throw UnparseableBody with unparseable json", function() {
+    var newMessageString   = MESSAGE_STRING + "(╯°□°）╯︵ ┻━┻"; //make it unparseable
+    var newSignature       = nacl.sign.detached(nacl.util.decodeUTF8(newMessageString), KEYPAIR.secretKey);
+    var newSignatureString = nacl.util.encodeBase64(newSignature);
+
+    var badMessage = function() { signedJson.read(newMessageString, newSignatureString, KEYPAIR_STRINGS.publicKey); };
+
+    expect(badMessage).to.throw(signedJson.errors.UnparseableBody);
+  });
+});
