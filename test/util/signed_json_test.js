@@ -84,7 +84,7 @@ describe("signedJson.read", function() {
   });
 });
 
-describe.only("signedJson.middleware", function() {
+describe("signedJson.middleware", function() {
   it("should pass through to the next middleware if the request is properly signed");
   it("should populate req.verified.walletId string");
   it("should populate req.verified.body object");

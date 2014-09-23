@@ -7,14 +7,14 @@ var Promise  = helper.Stex.Promise;
 var _        = helper.Stex._;
 var notp     = require("notp");
 
-describe("POST /v2/login_params/show", function() {
+describe("POST /v2/wallets/show_login_params", function() {
   beforeEach(function(done) {
     this.submit = function(params) {
       return request(app)
-        .post('/v2/login_params/show')
+        .post('/v2/wallets/show_login_params')
         .send(params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
+        .expect('Content-Type', /json/);
     };
 
     done();
