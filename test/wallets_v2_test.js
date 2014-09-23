@@ -18,7 +18,7 @@ describe("POST /v2/login_params/show", function() {
     };
 
     done();
-  })
+  });
 
   it("retrieves the login params properly by username", function() {
     return this.submit({username:"scott"}).expect(200);
@@ -39,7 +39,7 @@ describe("POST /v2/login_params/show", function() {
       self.submit({username:"missing"}).expect(404),
     ])
     .then(function() {
-      return self.submit({username:"scott"}).expect(404)
+      return self.submit({username:"scott"}).expect(404);
     });
   });
 });
@@ -51,7 +51,7 @@ describe("POST /v2/wallets/show", function() {
         .post('/v2/wallets/show')
         .send(params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
+        .expect('Content-Type', /json/);
     };
 
     this.lockout = function(username) {
@@ -88,12 +88,12 @@ describe("POST /v2/wallets/show", function() {
     var self = this;
     
     return this.lockout("scott").then(function() {    
-      self.submit({username:"scott", authToken:"authtoken"}).expect(403)
+      self.submit({username:"scott", authToken:"authtoken"}).expect(403);
     });
   });
 
   it("fails when the totpToken is required and is wrong", function() {
-    return this.submit({username:"mfa", authToken:"authtoken", totpToken:"wrongvalue"}).expect(403)
+    return this.submit({username:"mfa", authToken:"authtoken", totpToken:"wrongvalue"}).expect(403);
   });
 });
 
@@ -120,8 +120,8 @@ describe("POST /v2/wallets/create", function() {
         .post('/v2/wallets/create')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     done();
   });
@@ -136,7 +136,7 @@ describe("POST /v2/wallets/create", function() {
 
   var blankTest = function(prop) {
     return function() {
-      delete this.params[prop]
+      delete this.params[prop];
       //TODO: check for missing_field code
       return this.submit().expect(400);
     };
@@ -145,7 +145,7 @@ describe("POST /v2/wallets/create", function() {
 
   var badHashTest = function (prop) {
     return function() {
-      hashProp = prop + "Hash";
+      var hashProp = prop + "Hash";
       this.params[hashProp] = "badhash";
 
       //TODO: check for invalid_hash code
