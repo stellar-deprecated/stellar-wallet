@@ -27,10 +27,7 @@ describe("signedJson.read", function() {
     done();
   });
 
-
-
   it("should throw ArgumentError with null data", function(done) {
-
     var nullMessage   = function() { signedJson.read(null, SIGNATURE_STRING, KEYPAIR_STRINGS.publicKey); };
     var nullSignature = function() { signedJson.read(MESSAGE_STRING, null, KEYPAIR_STRINGS.publicKey); };
     var nullKey       = function() { signedJson.read(MESSAGE_STRING, SIGNATURE_STRING, null); };
@@ -74,7 +71,7 @@ describe("signedJson.read", function() {
     done();
   });
 
-  it("should throw UnparseableBody with unparseable json", function() {
+  it("should throw UnparseableBody with unparseable json", function(done) {
     var newMessageString   = MESSAGE_STRING + "(╯°□°）╯︵ ┻━┻"; //make it unparseable
     var newSignature       = nacl.sign.detached(nacl.util.decodeUTF8(newMessageString), KEYPAIR.secretKey);
     var newSignatureString = nacl.util.encodeBase64(newSignature);
@@ -82,5 +79,17 @@ describe("signedJson.read", function() {
     var badMessage = function() { signedJson.read(newMessageString, newSignatureString, KEYPAIR_STRINGS.publicKey); };
 
     expect(badMessage).to.throw(signedJson.errors.UnparseableBody);
+
+    done();
   });
+});
+
+describe.only("signedJson.middleware", function() {
+  it("should pass through to the next middleware if the request is properly signed");
+  it("should populate req.verified.walletId string");
+  it("should populate req.verified.body object");
+
+  it("should return 401 Unauthorized if no Authorization header is set");
+  it("should return 401 Unauthorized if no the wallet-id is not found");
+  it("should return 401 Unauthorized if no the signature does not verify the body");
 });
