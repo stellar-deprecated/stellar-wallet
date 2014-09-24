@@ -62,6 +62,7 @@ describe("POST /wallets/show", function() {
 
   it("locks a user out after the configured number of failed attempts", function(done) {
     var self = this;
+    self.timeout(5000);
     self.params.id = '-1';
 
     this.sinon.spy(log, 'warn');
