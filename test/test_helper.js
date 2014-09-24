@@ -11,7 +11,7 @@ var clearDb = function() {
     db.raw("TRUNCATE TABLE wallets"),
     db.raw("TRUNCATE TABLE wallets_v2"),
   ]);
-}
+};
 
 var clearRedis = function() {
   return stex.redis.flushdbAsync();
@@ -38,8 +38,8 @@ var makeWalletV2 = function(params) {
     createdAt:     new Date(),
     updatedAt:     new Date(),
 
-    updateKey:     "updatekey",
-    authToken:     hash.sha2("authtoken"),
+    publicKey:     "updatekey",
+    walletId:      hash.sha2("authtoken"),
 
     username:      params.username,
     salt:          new Buffer("somesaltgoeshere"),
@@ -52,7 +52,7 @@ var makeWalletV2 = function(params) {
 
     mainData:      params.mainData, 
     keychainData:  params.keychainData,
-    totpCode:      params.totpCode
+    totpKey:       params.totpKey
   });
 };
 
@@ -64,7 +64,7 @@ var loadFixtures = function() {
 
     makeWalletV2({username: "scott", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "david", mainData:'foo', keychainData:'foo'}),
-    makeWalletV2({username: "mfa",   mainData:'foo', keychainData:'foo', totpCode:'mytotpcode'}),
+    makeWalletV2({username: "mfa",   mainData:'foo', keychainData:'foo', totpKey:'mytotpKey'}),
   ]);
 };
 
