@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "gulp develop",
-    "test": "gulp test"
+    "test": "NODE_ENV=test gulp db:setup && gulp test"
   },
   "dependencies": {
     "scrypt-hash": "^1.1.8",

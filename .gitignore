@@ -7,3 +7,5 @@ node_modules
 .DS_Store
 tmp/
 newrelic_agent.log
+stellar-wallet.sublime-workspace
+docs/
