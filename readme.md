@@ -1,4 +1,5 @@
 # Stellar Wallet
+[![Build Status](https://travis-ci.org/stellar/stellar-wallet.svg?branch=master)](https://travis-ci.org/stellar/stellar-wallet)
 
 Stores encrypted data. The wallet server can't decrypt the data. Used by https://github.com/stellar/stellar-client to save the user's secret keys. 
 
