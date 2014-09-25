@@ -1,13 +1,10 @@
+var StexDev = require("stex/dev");
 var Stex    = require("stex");
-var hash    = require("../lib/util/hash")
 var Promise = Stex.Promise;
+var hash    = require("../lib/util/hash");
 
-var helpers = module.exports;
-helpers.Stex    = Stex;
-helpers.stexDev = require("stex-dev");
-helpers.expect  = helpers.stexDev.chai.expect;
-
-helpers.stexDev.sinon.init();
+var testHelper  = module.exports;
+testHelper.Stex = Stex;
 
 var clearDb = function() {
   return db.raw("TRUNCATE TABLE wallets");
@@ -38,9 +35,9 @@ var loadFixtures = function() {
     makeWallet({ id:'3', recoveryId:'3', authToken:'3', mainData:'foo3', recoveryData:'foo3', keychainData:'foo3' }),
     makeWallet({ id:'4', authToken:'4', mainData:'foo4', keychainData:'foo4' })
   ]);
-}
+};
 
-helpers.makeString = function(size) {
+testHelper.makeString = function(size) {
   var x = "";
   for(var i = 0; i < size; i++) {
     x += "a";
@@ -57,7 +54,7 @@ beforeEach(function(done) {
 
 before(function(done) {
   require("../lib/app")
-    .init()
+    .init(true)
     .then(function(stex){ 
       stex.activate();
       done(); 

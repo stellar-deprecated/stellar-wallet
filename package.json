@@ -11,7 +11,6 @@
     "stex": "git+https://github.com/stellar/stex.git#master"
   },
   "devDependencies": {
-    "gulp": "^3.8.5",
-    "stex-dev": "git+https://github.com/stellar/stex-dev.git#master"
+    "gulp": "^3.8.5"
   }
 }

@@ -1,8 +1,8 @@
 var Stex    = require("stex");
-var stexDev = require("stex-dev");
-var gulp    = stexDev.gulp();
-var plugins = stexDev.gulpPlugins();
-var paths   = stexDev.paths;
+var StexDev = require("stex/dev");
+var gulp    = StexDev.gulp();
+var plugins = StexDev.gulpPlugins();
+var paths   = StexDev.paths;
 
 paths.root = __dirname; //HACK: can't think of a better way to expose the app root prior to stex init
 

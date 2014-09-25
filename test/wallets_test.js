@@ -1,16 +1,14 @@
 var helper  = require("./test_helper");
-var request = helper.stexDev.supertest;
-var expect  = helper.expect;
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
 var _       = helper.Stex._;
 
 describe("POST /wallets/show", function() {
   beforeEach(function(done) {
-    this.params = {}
-    this.referer = "https://launch.stellar.org/#login"
+    this.params = {};
+    this.referer = "https://launch.stellar.org/#login";
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/show')
         .send(this.params)
         .set("Referer", this.referer)
@@ -227,10 +225,10 @@ describe("POST /wallets/update", function() {
       "mainDataHash":     hash.sha1("mains2"),
       "keychainData":     "keys2",
       "keychainDataHash": hash.sha1("keys2")
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/update')
         .send(this.params)
         .set('Accept', 'application/json')
@@ -346,15 +344,15 @@ describe("POST /wallets/replace", function() {
       "newId":        "3",
       "oldAuthToken": "1",
       "newAuthToken": "3"
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/replace')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     done();
   });
@@ -438,10 +436,10 @@ describe("POST /wallets/replace", function() {
 
 describe("POST /wallets/recover", function() {
   beforeEach(function(done) {
-    this.params = {}
+    this.params = {};
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/recover')
         .send(this.params)
         .set('Accept', 'application/json')
@@ -500,15 +498,15 @@ describe("POST /wallets/create_recovery_data", function() {
       "recoveryId":       "recoveryId",
       "recoveryData":     "foo4",
       "recoveryDataHash": hash.sha1("foo4")
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/create_recovery_data')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     this.submitWithSuccessTest = function() {
       return this.submit()
