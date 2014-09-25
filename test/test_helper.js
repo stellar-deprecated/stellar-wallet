@@ -11,11 +11,11 @@ helpers.stexDev.sinon.init();
 
 var clearDb = function() {
   return db.raw("TRUNCATE TABLE wallets");
-}
+};
 
 var clearRedis = function() {
   return stex.redis.flushdbAsync();
-}
+};
 
 var makeWallet = function(params) {
   return Promise
@@ -30,7 +30,7 @@ var makeWallet = function(params) {
     .then(function(params) {
       return db("wallets").insert(params);
     });
-}
+};
 
 var loadFixtures = function() {
   return Promise.all([
@@ -46,7 +46,7 @@ helpers.makeString = function(size) {
     x += "a";
   }
   return x;
-}
+};
 
 beforeEach(function(done) {
   clearDb()
@@ -62,4 +62,4 @@ before(function(done) {
       stex.activate();
       done(); 
     });
-})
+});
