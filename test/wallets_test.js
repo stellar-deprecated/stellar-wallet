@@ -1,22 +1,20 @@
 var helper  = require("./test_helper");
-var request = helper.stexDev.supertest;
-var expect  = helper.expect;
 var wallet  = require("../lib/models/wallet");
 var hash    = require("../lib/util/hash");
 var _       = helper.Stex._;
 
 describe("POST /wallets/show", function() {
   beforeEach(function(done) {
-    this.params = {}
-    this.referer = "https://launch.stellar.org/#login"
+    this.params = {};
+    this.referer = "https://launch.stellar.org/#login";
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/show')
         .send(this.params)
         .set("Referer", this.referer)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     done();
   });
@@ -75,7 +73,7 @@ describe("POST /wallets/show", function() {
       } else {
         cb();
       }
-    }
+    };
 
     submitBad(6, function() {
       expect(log.warn.callCount).to.be.at.least(1);
@@ -99,7 +97,7 @@ describe("POST /wallets/show", function() {
 
   it("doesn't log a warning when the referer is as expected", function(done) {
     this.sinon.spy(log, 'warn');
-    this.referer = "https://launch.stellar.org/#login"
+    this.referer = "https://launch.stellar.org/#login";
     this.submit().end(function() {
       expectNoRefererWarning();
       done();
@@ -108,7 +106,7 @@ describe("POST /wallets/show", function() {
 
   it("doesn't log a warning when the referer is localhost", function(done) {
     this.sinon.spy(log, 'warn');
-    this.referer = "http://localhost:8000"
+    this.referer = "http://localhost:8000";
     this.submit().end(function() {
       expectNoRefererWarning();
       done();
@@ -117,27 +115,27 @@ describe("POST /wallets/show", function() {
 
   it("logs a warning when the request has no referer", function(done) {
     this.sinon.spy(log, 'warn');
-    this.referer = ""
+    this.referer = "";
     this.submit().end(function() {
-      expectRefererWarning()
+      expectRefererWarning();
       done();
     });
   });
 
   it("logs a warning when the referer is a valid url but is from an unexpected domain", function(done) {
     this.sinon.spy(log, 'warn');
-    this.referer = "https://strdice.com/#login"
+    this.referer = "https://strdice.com/#login";
     this.submit().end(function() {
-      expectRefererWarning()
+      expectRefererWarning();
       done();
     });
   });
 
   it("logs a warning when the referer is an invalid url", function(done) {
     this.sinon.spy(log, 'warn');
-    this.referer = "(╯°□°)╯︵ ┻━┻"
+    this.referer = "(╯°□°)╯︵ ┻━┻";
     this.submit().end(function() {
-      expectRefererWarning()
+      expectRefererWarning();
       done();
     });
   });
@@ -157,15 +155,15 @@ describe("POST /wallets/create", function() {
       "recoveryDataHash": hash.sha1("reco"),
       "keychainData":     "keys",
       "keychainDataHash": hash.sha1("keys")
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/create')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     done();
   });
@@ -207,8 +205,8 @@ describe("POST /wallets/create", function() {
           field:  prop
         })
         .end(done);
-    }
-  }
+    };
+  };
 
   it("fails when an id isn't provided",           blankTest("id"));
   it("fails when a authToken isn't provided",     blankTest("authToken"));
@@ -227,21 +225,21 @@ describe("POST /wallets/update", function() {
       "mainDataHash":     hash.sha1("mains2"),
       "keychainData":     "keys2",
       "keychainDataHash": hash.sha1("keys2")
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/update')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     this.submitWithSuccessTest = function() {
       return this.submit()
         .expect(200)
         .expectBody({ status : "success" });
-    }
+    };
 
     done();
   });
@@ -255,7 +253,7 @@ describe("POST /wallets/update", function() {
         expect(w.mainData.toString("utf-8")).to.equal(self.params.mainData);
         expect(w.keychainData.toString("utf-8")).to.equal(self.params.keychainData);
       })
-      .finally(done)
+      .finally(done);
     });
   });
 
@@ -267,7 +265,7 @@ describe("POST /wallets/update", function() {
       wallet.get(self.params.id).then(function(w) {
         expect(w.recoveryId).to.not.equal("3");
       })
-      .finally(done)
+      .finally(done);
     });
   });
 
@@ -281,12 +279,12 @@ describe("POST /wallets/update", function() {
         expect(w.mainData.toString("utf-8")).to.not.equal("mains2");
         expect(w.keychainData.toString("utf-8")).to.equal("keys2");
       })
-      .finally(done)
+      .finally(done);
     });
   });
 
   it("fails when the provided authToken does not match the stored token", function(done) {
-    this.params.authToken = "wrong!"
+    this.params.authToken = "wrong!";
     this.submit()
       .expect(403)
       .expectBody({ 
@@ -332,7 +330,7 @@ describe("POST /wallets/update", function() {
 
         expect(w.mainData.length).to.equal(self.params.mainData.length);
       })
-      .finally(done)
+      .finally(done);
     });
   });
 });
@@ -346,15 +344,15 @@ describe("POST /wallets/replace", function() {
       "newId":        "3",
       "oldAuthToken": "1",
       "newAuthToken": "3"
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/replace')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     done();
   });
@@ -368,37 +366,37 @@ describe("POST /wallets/replace", function() {
         .then(function(w) {
           expect(w).to.not.exist;
         })
-        .finally(done)
+        .finally(done);
     };
 
     this.submit()
       .expect(200)
       .expectBody({ status : "success" })
-      .end(confirmDeletion)
+      .end(confirmDeletion);
   });
 
   it("fails when the provided oldId does not match a wallet", function(done) {
-    this.params.oldId = "nogood"
+    this.params.oldId = "nogood";
     this.submit()
       .expect(404)
       .expectBody({ status : "fail", code: "not_found" })
-      .end(done)
+      .end(done);
   });
 
   it("fails when the provided newId does not match a wallet", function(done) {
-    this.params.newId = "nogood"
+    this.params.newId = "nogood";
     this.submit()
       .expect(404)
       .expectBody({ status : "fail", code: "not_found" })
-      .end(done)
+      .end(done);
   });
 
   it("fails when the provided oldAuthToken does not match the stored token from the old wallet", function(done) {
-    this.params.oldAuthToken = "nogood"
+    this.params.oldAuthToken = "nogood";
     this.submit()
       .expect(403)
       .expectBody({ status : "fail", code: "forbidden" })
-      .end(done)
+      .end(done);
   });
 
 
@@ -414,11 +412,11 @@ describe("POST /wallets/replace", function() {
   });
 
   it("fails when the provided newAuthToken does not match the stored token from the new wallet", function(done) {
-    this.params.newAuthToken = "nogood"
+    this.params.newAuthToken = "nogood";
     this.submit()
       .expect(403)
       .expectBody({ status : "fail", code: "forbidden" })
-      .end(done)
+      .end(done);
   });
 
 
@@ -438,18 +436,18 @@ describe("POST /wallets/replace", function() {
 
 describe("POST /wallets/recover", function() {
   beforeEach(function(done) {
-    this.params = {}
+    this.params = {};
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/recover')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     done();
-  })
+  });
 
   it("retrieves the wallet properly", function(done) {
     var self = this;
@@ -465,7 +463,7 @@ describe("POST /wallets/recover", function() {
         .expect(200)
         .end(done);
     });
-  })
+  });
 
   it("fails to find a wallet when none exists for the recoveryId", function(done) {
     var self = this;
@@ -500,21 +498,21 @@ describe("POST /wallets/create_recovery_data", function() {
       "recoveryId":       "recoveryId",
       "recoveryData":     "foo4",
       "recoveryDataHash": hash.sha1("foo4")
-    }
+    };
 
     this.submit = function() {
-      return request(app)
+      return test.supertest(app)
         .post('/wallets/create_recovery_data')
         .send(this.params)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-    }
+        .expect('Content-Type', /json/);
+    };
 
     this.submitWithSuccessTest = function() {
       return this.submit()
         .expect(200)
         .expectBody({ status : "success" });
-    }
+    };
 
     done();
   });
@@ -532,7 +530,7 @@ describe("POST /wallets/create_recovery_data", function() {
         });
 
       })
-        .finally(done)
+        .finally(done);
     });
   });
 
@@ -545,12 +543,12 @@ describe("POST /wallets/create_recovery_data", function() {
           expect(w.recoveryId).to.equal(recoveryId);
         });
       })
-        .finally(done)
+        .finally(done);
     });
   });
 
   it("fails when the provided authToken does not match the stored token", function(done) {
-    this.params.authToken = "wrong!"
+    this.params.authToken = "wrong!";
     this.submit()
       .expect(403)
       .expectBody({
@@ -566,7 +564,7 @@ describe("POST /wallets/create_recovery_data", function() {
 
 function badHashTest(prop) {
   return function(done) {
-    hashProp = prop + "Hash";
+    var hashProp = prop + "Hash";
     this.params[hashProp] = "badhash";
 
     this.submit()
@@ -577,5 +575,5 @@ function badHashTest(prop) {
         field:  prop
       })
       .end(done);
-  }
+  };
 }

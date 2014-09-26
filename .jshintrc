@@ -11,5 +11,5 @@
   "boss": true,
   "eqnull": true,
   "node": true,
-  "predef": [ "conf", "db", "log", "stex", "app", "-Promise" ]
+  "predef": [ "conf", "db", "log", "stex", "app", "-Promise", "before", "beforeEach", "it", "describe", "test", "expect" ]
 }
