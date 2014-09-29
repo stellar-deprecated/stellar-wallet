@@ -5,6 +5,16 @@ var Promise  = helper.Stex.Promise;
 var _        = helper.Stex._;
 var notp     = require("notp");
 
+describe.only("GET /v2/kdf_params", function() {
+  it("succeeds", function() {
+    return test.supertestAsPromised(app)
+        .get('/v2/kdf_params')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+  });
+});
+
 describe("POST /v2/wallets/show_login_params", function() {
   beforeEach(function(done) {
     this.submit = function(params) {
