@@ -5,7 +5,7 @@ var Promise  = helper.Stex.Promise;
 var _        = helper.Stex._;
 var notp     = require("notp");
 
-describe.only("GET /v2/kdf_params", function() {
+describe("GET /v2/kdf_params", function() {
   it("succeeds", function() {
     return test.supertestAsPromised(app)
         .get('/v2/kdf_params')
@@ -91,4 +91,60 @@ describe("POST /v2/wallets/show", function() {
 });
 
 
-describe("POST /v2/wallets/create", function() {});
+describe("POST /v2/wallets/create", function() {
+  beforeEach(function(done) {
+    this.params = {
+      "username":         "nullstyle",
+      "walletId":         new Buffer("2").toString('base64'),
+      "salt":             "2",
+      "kdfParams":        "2",
+      "publicKey":        "2",
+      "mainData":         "mains",
+      "mainDataHash":     hash.sha1("mains"),
+      "keychainData":     "keys",
+      "keychainDataHash": hash.sha1("keys")
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/create')
+        .send(this.params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    done();
+  });
+
+
+  it("creates a wallet in the db when on the happy path", function(done) {
+    this.submit()
+      .expect(200)
+      .end(done);
+      //TODO: confirm the row was inserted
+  });
+
+  it("fails when the username isn't provided");
+  it("fails when the username has already been taken");
+  it("fails when the username contains invalid characters");
+
+  it("fails when the walletId isn't provided");
+  it("fails when the walletId is not properly base64 encoded");
+
+  it("fails when the salt isn't provided");
+
+  it("fails when the kdfParams isn't provided");
+  it("fails when the kdfParams is not json");
+
+  it("fails when the publicKey isn't provided");
+  it("fails when the publicKey is not properly base64 encoded");
+  it("fails when the publicKey cannot be an ed25519 key (i.e. 32-bytes long)");
+
+  it("fails when the mainData isn't provided");
+  it("fails when the mainData is too large");
+  it("fails when the provided mainHash doesn't verify the mainData");
+
+  it("fails when the keychainData isn't provided");
+  it("fails when the keychainData is too large");
+  it("fails when the provided keychainHash doesn't verify the keychainData");
+});
