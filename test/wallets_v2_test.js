@@ -1,6 +1,4 @@
 var helper   = require("./test_helper");
-var request  = require("supertest-as-promised");
-var expect   = helper.expect;
 var walletV2 = require("../lib/models/wallet_v2");
 var hash     = require("../lib/util/hash");
 var Promise  = helper.Stex.Promise;
@@ -10,7 +8,7 @@ var notp     = require("notp");
 describe("POST /v2/wallets/show_login_params", function() {
   beforeEach(function(done) {
     this.submit = function(params) {
-      return request(app)
+      return test.supertestAsPromised(app)
         .post('/v2/wallets/show_login_params')
         .send(params)
         .set('Accept', 'application/json')
@@ -32,7 +30,7 @@ describe("POST /v2/wallets/show_login_params", function() {
 describe("POST /v2/wallets/show", function() {
   beforeEach(function(done) {
     this.submit = function(params) {
-      return request(app)
+      return test.supertestAsPromised(app)
         .post('/v2/wallets/show')
         .send(params)
         .set('Accept', 'application/json')

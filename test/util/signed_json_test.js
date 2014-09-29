@@ -1,5 +1,4 @@
 var helper     = require("../test_helper");
-var expect     = helper.expect;
 var signedJson = require("../../lib/util/signed_json");
 var _          = helper.Stex._;
 var errors     = helper.Stex.errors;
