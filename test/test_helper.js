@@ -64,7 +64,7 @@ var loadFixtures = function() {
 
     makeWalletV2({username: "scott", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "david", mainData:'foo', keychainData:'foo'}),
-    makeWalletV2({username: "mfa",   mainData:'foo', keychainData:'foo', totpKey:'mytotpKey'}),
+    makeWalletV2({username: "mfa",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64")}),
   ]);
 };
 
