@@ -2,9 +2,19 @@ var StexDev = require("stex/dev");
 var Stex    = require("stex");
 var Promise = Stex.Promise;
 var hash    = require("../lib/util/hash");
+var nacl    = require("tweetnacl");
 
 var testHelper  = module.exports;
 testHelper.Stex = Stex;
+
+var SEED_STRING      = "iAziZHvikuV/KLVinhNAo15vwwFxLSq2X6H9bjNw1Ss=";
+var SEED             = nacl.util.decodeBase64(SEED_STRING);
+var KEYPAIR          = nacl.sign.keyPair.fromSeed(SEED);
+var KEYPAIR_STRINGS  = {
+  publicKey: nacl.util.encodeBase64(KEYPAIR.publicKey),
+  secretKey: nacl.util.encodeBase64(KEYPAIR.secretKey),
+};
+testHelper.testKeyPair = KEYPAIR_STRINGS;
 
 var clearDb = function() {
   return Promise.all([
@@ -38,11 +48,11 @@ var makeWalletV2 = function(params) {
     createdAt:     new Date(),
     updatedAt:     new Date(),
 
-    publicKey:     "updatekey",
-    walletId:      hash.sha2("authtoken"),
+    publicKey:     testHelper.testKeyPair.publicKey,
+    walletId:      hash.sha2(params.username),
 
     username:      params.username,
-    salt:          new Buffer("somesaltgoeshere"),
+    salt:          "somesaltgoeshere",
     kdfParams:     JSON.stringify({
       algorithm: "scrypt",
       n: Math.pow(2,16),
