@@ -7,15 +7,15 @@ var nacl       = require("tweetnacl");
 var SEED_STRING      = "iAziZHvikuV/KLVinhNAo15vwwFxLSq2X6H9bjNw1Ss=";
 var SEED             = nacl.util.decodeBase64(SEED_STRING);
 var KEYPAIR          = nacl.sign.keyPair.fromSeed(SEED);
+var KEYPAIR_STRINGS  = {
+  publicKey: nacl.util.encodeBase64(KEYPAIR.publicKey),
+  secretKey: nacl.util.encodeBase64(KEYPAIR.secretKey),
+};
 var DATA             = {"somekey": 3};
 var MESSAGE_STRING   = JSON.stringify(DATA);
 var MESSAGE          = nacl.util.decodeUTF8(MESSAGE_STRING);
 var SIGNATURE        = nacl.sign.detached(MESSAGE, KEYPAIR.secretKey);
 var SIGNATURE_STRING = nacl.util.encodeBase64(SIGNATURE);
-var KEYPAIR_STRINGS  = {
-  publicKey: nacl.util.encodeBase64(KEYPAIR.publicKey),
-  secretKey: nacl.util.encodeBase64(KEYPAIR.secretKey),
-};
 
 describe("signedJson.read", function() {
   
