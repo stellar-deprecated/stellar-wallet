@@ -148,3 +148,29 @@ describe("POST /v2/wallets/create", function() {
   it("fails when the keychainData is too large");
   it("fails when the provided keychainHash doesn't verify the keychainData");
 });
+
+
+describe("POST /v2/totp/enable", function() {
+  beforeEach(function(done) {
+    this.params = {
+      "lockVersion": 0,
+      "totpKey": new Buffer("hello").toString("base64"),
+      "totpCode": notp.totp.gen("hello", {})
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/totp/enable')
+        .sendSigned(this.params, "scott", helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    done();
+
+  });
+
+  it("saves the totpKey on the wallet in the happy path", function() {
+    return this.submit().expect(200);
+  });
+});
