@@ -14,7 +14,8 @@ stex.test.supertest.Test.prototype.sendSigned = function(body, walletId, keyPair
 
 
 function authHeader(walletId, signature) {
-  return 'STELLAR-WALLET-V2 wallet-id=' + walletId + ' signature=' + signature;
+  var wallerId = new Buffer(walletId).toString('base64');
+  return 'STELLAR-WALLET-V2 wallet-id=' + wallerId + ' signature=' + signature;
 }
 
 function sign(message, keyPair) {

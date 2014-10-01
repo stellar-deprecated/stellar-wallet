@@ -62,11 +62,11 @@ describe("POST /v2/wallets/show", function() {
   });
 
   it("retrieves the wallet properly", function() {
-    return this.submit({username:"scott", walletId:new Buffer("authtoken").toString("base64")}).expect(200);
+    return this.submit({username:"scott", walletId:new Buffer("scott").toString("base64")}).expect(200);
   });
 
   it("retrieves the wallet properly with totpCode", function() {
-    return this.submit({username:"mfa", walletId:new Buffer("authtoken").toString("base64"), totpCode:notp.totp.gen("mytotpKey", {})}).expect(200);
+    return this.submit({username:"mfa", walletId:new Buffer("mfa").toString("base64"), totpCode:notp.totp.gen("mytotpKey", {})}).expect(200);
   });
 
   it("fails with 403 when the username is not found", function() {
@@ -81,12 +81,12 @@ describe("POST /v2/wallets/show", function() {
     var self = this;
     
     return this.lockout("scott").then(function() {    
-      self.submit({username:"scott", walletId:new Buffer("authtoken").toString("base64")}).expect(403);
+      self.submit({username:"scott", walletId:new Buffer("scott").toString("base64")}).expect(403);
     });
   });
 
   it("fails when the totpToken is required and is wrong", function() {
-    return this.submit({username:"mfa", walletId:new Buffer("authtoken").toString("base64"), totpCode:"wrongvalue"}).expect(403);
+    return this.submit({username:"mfa", walletId:new Buffer("scott").toString("base64"), totpCode:"wrongvalue"}).expect(403);
   });
 });
 
