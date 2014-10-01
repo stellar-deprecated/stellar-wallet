@@ -191,29 +191,14 @@ describe("POST /wallets/create", function() {
       .end(done);
   });
 
-  it("fails when the provided mainHash doesn't verify the mainData",         badHashTest("mainData"));
-  it("fails when the provided keychainHash doesn't verify the keychainData", badHashTest("keychainData"));
+  it("fails when the provided mainHash doesn't verify the mainData",         helper.badHashTest("mainData"));
+  it("fails when the provided keychainHash doesn't verify the keychainData", helper.badHashTest("keychainData"));
 
 
-  var blankTest = function(prop) {
-    return function(done) {
-      delete this.params[prop];
-
-      this.submit()
-        .expect(400)
-        .expectBody({ 
-          status: "fail",
-          code:   "missing",
-          field:  prop
-        })
-        .end(done);
-    };
-  };
-
-  it("fails when an id isn't provided",           blankTest("id"));
-  it("fails when a authToken isn't provided",     blankTest("authToken"));
-  it("fails when a mainData isn't provided",      blankTest("mainData"));
-  it("fails when a keychainData isn't provided",  blankTest("keychainData"));
+  it("fails when an id isn't provided",           helper.blankTest("id"));
+  it("fails when a authToken isn't provided",     helper.blankTest("authToken"));
+  it("fails when a mainData isn't provided",      helper.blankTest("mainData"));
+  it("fails when a keychainData isn't provided",  helper.blankTest("keychainData"));
 });
 
 describe("POST /wallets/update", function() {
@@ -318,8 +303,8 @@ describe("POST /wallets/update", function() {
       .end(done);
   });
 
-  it("fails when the provided mainHash doesn't verify the mainData",         badHashTest("mainData"));
-  it("fails when the provided keychainHash doesn't verify the keychainData", badHashTest("keychainData"));
+  it("fails when the provided mainHash doesn't verify the mainData",         helper.badHashTest("mainData"));
+  it("fails when the provided keychainHash doesn't verify the keychainData", helper.badHashTest("keychainData"));
 
   it("succeeds with inputs of 1mb in size", function(done) {
     var self = this;
@@ -560,22 +545,5 @@ describe("POST /wallets/create_recovery_data", function() {
       .end(done);
   });
 
-  it("fails when the provided recoveryHash doesn't verify the recoveryData", badHashTest("recoveryData"));
+  it("fails when the provided recoveryHash doesn't verify the recoveryData", helper.badHashTest("recoveryData"));
 });
-
-
-function badHashTest(prop) {
-  return function(done) {
-    var hashProp = prop + "Hash";
-    this.params[hashProp] = "badhash";
-
-    this.submit()
-      .expect(400)
-      .expectBody({ 
-        status: "fail",
-        code:   "invalid_hash",
-        field:  prop
-      })
-      .end(done);
-  };
-}

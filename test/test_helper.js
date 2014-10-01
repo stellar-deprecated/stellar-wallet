@@ -82,6 +82,38 @@ testHelper.makeString = function(size) {
   return x;
 };
 
+testHelper.blankTest = function(prop) {
+  return function(done) {
+    delete this.params[prop];
+
+    this.submit()
+      .expect(400)
+      .expectBody({ 
+        status: "fail",
+        code:   "missing",
+        field:  prop
+      })
+      .end(done);
+  };
+};
+
+
+testHelper.badHashTest = function(prop) {
+  return function(done) {
+    var hashProp = prop + "Hash";
+    this.params[hashProp] = "badhash";
+
+    this.submit()
+      .expect(400)
+      .expectBody({ 
+        status: "fail",
+        code:   "invalid_hash",
+        field:  prop
+      })
+      .end(done);
+  };
+};
+
 beforeEach(function(done) {
   clearDb()
     .then(clearRedis)
