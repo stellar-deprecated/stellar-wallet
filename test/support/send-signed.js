@@ -1,8 +1,9 @@
-var nacl = require("tweetnacl");
+var signedJson = require("../../lib/util/signed_json");
+var sign       = require("../../lib/util/sign");
 
 stex.test.supertest.Test.prototype.sendSigned = function(body, walletId, keyPair) {
   var rawBody       = JSON.stringify(body);
-  var signature     = sign(rawBody, keyPair);
+  var signature     = sign.gen(rawBody, keyPair.secretKey);
   var authorization = authHeader(walletId, signature);
 
   this.type("json");
@@ -12,15 +13,14 @@ stex.test.supertest.Test.prototype.sendSigned = function(body, walletId, keyPair
   return this;
 };
 
+// install test route for signed json
+
+stex.router.post("/v2/signed_json_test", signedJson.middleware, function(req, res, next) {
+  res.status(200).send(req.verified);
+});
+
 
 function authHeader(walletId, signature) {
   var wallerId = new Buffer(walletId).toString('base64');
   return 'STELLAR-WALLET-V2 wallet-id=' + wallerId + ' signature=' + signature;
-}
-
-function sign(message, keyPair) {
-  var rawMessage   = nacl.util.decodeUTF8(message);
-  var rawSecret    = nacl.util.decodeBase64(keyPair.secretKey);
-  var rawSignature = nacl.sign.detached(rawMessage, rawSecret);
-  return nacl.util.encodeBase64(rawSignature);
 }

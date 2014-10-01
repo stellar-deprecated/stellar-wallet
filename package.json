@@ -7,11 +7,11 @@
     "test": "NODE_ENV=test gulp db:setup && gulp test"
   },
   "dependencies": {
+    "ed25519": "0.0.2",
     "notp": "^2.0.2",
     "scmp": "0.0.3",
     "scrypt-hash": "^1.1.8",
-    "stex": "git+https://github.com/stellar/stex.git#master",
-    "tweetnacl": "^0.11.2"
+    "stex": "git+https://github.com/stellar/stex.git#master"
   },
   "devDependencies": {
     "gulp": "^3.8.5"

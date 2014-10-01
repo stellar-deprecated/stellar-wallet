@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "npm-shrinkwrap-version": "3.1.8",
   "dependencies": {
+    "ed25519": {
+      "version": "0.0.2",
+      "resolved": "https://registry.npmjs.org/ed25519/-/ed25519-0.0.2.tgz"
+    },
     "notp": {
       "version": "2.0.2",
       "resolved": "https://registry.npmjs.org/notp/-/notp-2.0.2.tgz"
@@ -27,8 +31,7 @@
     },
     "stex": {
       "version": "0.1.0",
-      "from": "stex@git+https://github.com/stellar/stex.git#bd02b4f72329d21736c18c78a4b9e0065dce3784",
-      "resolved": "git+https://github.com/stellar/stex.git#bd02b4f72329d21736c18c78a4b9e0065dce3784",
+      "resolved": "https://registry.npmjs.org/stex/-/stex-0.1.0.tgz",
       "dependencies": {
         "bluebird": {
           "version": "2.3.4",
@@ -2575,6 +2578,10 @@
           "version": "0.10.3",
           "resolved": "https://registry.npmjs.org/redis/-/redis-0.10.3.tgz"
         },
+        "rosie": {
+          "version": "0.3.1",
+          "resolved": "https://registry.npmjs.org/rosie/-/rosie-0.3.1.tgz"
+        },
         "sequencify": {
           "version": "0.0.7",
           "resolved": "https://registry.npmjs.org/sequencify/-/sequencify-0.0.7.tgz"
@@ -2732,10 +2739,6 @@
           }
         }
       }
-    },
-    "tweetnacl": {
-      "version": "0.11.2",
-      "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.11.2.tgz"
     }
   }
 }
