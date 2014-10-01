@@ -76,9 +76,30 @@ describe("signedJson.read", function() {
 });
 
 describe("signedJson.middleware", function() {
-  it("should pass through to the next middleware if the request is properly signed");
-  it("should populate req.verified.walletId string");
-  it("should populate req.verified.body object");
+  beforeEach(function () {
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/signed_json_test')
+        .sendSigned({tableFlip: "(╯°□°）╯︵ ┻━┻"}, "scott", helper.testKeyPair)
+        .set('Accept', 'application/json');
+    };
+  });
+
+  it("should pass through to the next middleware if the request is properly signed", function() {
+    return this.submit().expect(200);
+  });
+
+  it("should populate req.verified.walletId string", function() {
+    return this.submit().expectBody({ walletId:  new Buffer("scott").toString("base64") });
+  });
+
+  it("should populate req.verified.body object", function() {
+    return this.submit().expectBody({ 
+        body:  {
+          tableFlip: "(╯°□°）╯︵ ┻━┻"
+        }
+      });
+  });
 
   it("should return 401 Unauthorized if no Authorization header is set");
   it("should return 401 Unauthorized if no the wallet-id is not found");
