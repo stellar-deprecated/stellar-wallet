@@ -101,7 +101,22 @@ describe("signedJson.middleware", function() {
       });
   });
 
-  it("should return 401 Unauthorized if no Authorization header is set");
-  it("should return 401 Unauthorized if no the wallet-id is not found");
-  it("should return 401 Unauthorized if no the signature does not verify the body");
+  it("should return 401 Unauthorized if no Authorization header is set", function() {
+    return this.submit()
+      .set('Authorization', null)
+      .expect(401);
+  });
+
+  it("should return 401 Unauthorized if no the wallet-id is not found", function() {
+    return this.submit()
+      .setAuthHeader('notfound', "somesignature")
+      .expect(401);
+  });
+
+  it("should return 401 Unauthorized if no the signature does not verify the body", function() {
+    var signature = sign.gen("some message", helper.testKeyPair.secretKey);
+    return this.submit()
+      .setAuthHeader("scott", signature)
+      .expect(401);
+  });
 });
