@@ -31,7 +31,8 @@
     },
     "stex": {
       "version": "0.1.0",
-      "resolved": "https://registry.npmjs.org/stex/-/stex-0.1.0.tgz",
+      "from": "stex@git+https://github.com/stellar/stex.git#475513e65a8593615375ae6254836cfa9ef210e0",
+      "resolved": "git+https://github.com/stellar/stex.git#475513e65a8593615375ae6254836cfa9ef210e0",
       "dependencies": {
         "bluebird": {
           "version": "2.3.4",
@@ -2577,10 +2578,6 @@
         "redis": {
           "version": "0.10.3",
           "resolved": "https://registry.npmjs.org/redis/-/redis-0.10.3.tgz"
-        },
-        "rosie": {
-          "version": "0.3.1",
-          "resolved": "https://registry.npmjs.org/rosie/-/rosie-0.3.1.tgz"
         },
         "sequencify": {
           "version": "0.0.7",
