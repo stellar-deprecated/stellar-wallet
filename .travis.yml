@@ -4,3 +4,5 @@ node_js:
 services:
   - mysql
   - redis
+notifications:
+  slack: stellarfoundation:xOJMGp50Rwbq6w59y7HB7pXS
