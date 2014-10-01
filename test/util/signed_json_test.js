@@ -4,8 +4,8 @@ var sign       = require("../../lib/util/sign");
 var _          = helper.Stex._;
 var errors     = helper.Stex.errors;
 
-var SEED             = "iAziZHvikuV/KLVinhNAo15vwwFxLSq2X6H9bjNw1Ss=";
-var KEYPAIR          = sign.keyPair(SEED);
+var SEED             = helper.testKeyPairSeed;
+var KEYPAIR          = helper.testKeyPair;
 var DATA             = {"somekey": 3};
 var MESSAGE          = JSON.stringify(DATA);
 var SIGNATURE        = sign.gen(MESSAGE, KEYPAIR.secretKey);

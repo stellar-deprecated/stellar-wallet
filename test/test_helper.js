@@ -7,9 +7,10 @@ var sign    = require("../lib/util/sign");
 var testHelper  = module.exports;
 testHelper.Stex = Stex;
 
-var SEED             = "iAziZHvikuV/KLVinhNAo15vwwFxLSq2X6H9bjNw1Ss=";
-var KEYPAIR          = sign.keyPair(SEED);
-testHelper.testKeyPair = KEYPAIR;
+var SEED                   = "iAziZHvikuV/KLVinhNAo15vwwFxLSq2X6H9bjNw1Ss=";
+var KEYPAIR                = sign.keyPair(SEED);
+testHelper.testKeyPairSeed = SEED;
+testHelper.testKeyPair     = KEYPAIR;
 
 var clearDb = function() {
   return Promise.all([

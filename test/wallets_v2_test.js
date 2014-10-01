@@ -170,7 +170,29 @@ describe("POST /v2/totp/enable", function() {
 
   });
 
-  it("saves the totpKey on the wallet in the happy path", function() {
-    return this.submit().expect(200);
+  it("saves the totpKey on the wallet in the happy path", function(done) {
+    var self = this;
+
+    this.submit()
+      .expect(200)
+      .expectBody({status: "success", newLockVersion: 1})
+      .end(function () {
+        walletV2.get("scott").then(function(w) {
+          expect(w.totpKey).to.eq(self.params.totpKey);
+        })
+        .finally(done);
+      });
   });
+
+
+
+  it("fails when the totpKey missing");
+  it("fails when the totpKey is invalid");
+
+  it("fails when the totpCode is missing");
+  it("fails when the totpCode is not the current value of the totpKey");
+
+  it("fails when the lockVersion specified in the update is not the same as the wallets current lockVersion");
+
+  it("does not update the totpKey if the message isn't signed properly");
 });
