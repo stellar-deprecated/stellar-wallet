@@ -1,3 +1,4 @@
+/*jshint expr: true*/
 var helper   = require("./test_helper");
 var walletV2 = require("../lib/models/wallet_v2");
 var hash     = require("../lib/util/hash");
@@ -208,5 +209,20 @@ describe("POST /v2/totp/enable", function() {
       .expectBody({status: "fail", code: "not_found"});
   });
 
-  it("does not update the totpKey if the message isn't signed properly");
+  it.only("does not update the totpKey if the message isn't signed properly", function (done) {
+    var self = this;
+
+    return test.supertestAsPromised(app)
+      .post('/v2/totp/enable')
+      .send(this.params)
+      .set('Accept', 'application/json')
+      .expect(400)
+      .expectBody({status: "fail", code: "invalid_signature"})
+      .end(function () {
+        walletV2.get("scott").then(function(w) {
+          expect(w.totpKey).to.be.null;
+        })
+        .finally(done);
+      });
+  });
 });

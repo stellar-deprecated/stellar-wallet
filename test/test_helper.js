@@ -3,6 +3,7 @@ var Stex    = require("stex");
 var Promise = Stex.Promise;
 var hash    = require("../lib/util/hash");
 var sign    = require("../lib/util/sign");
+process.env["NODE_ENV"]="test";
 
 var testHelper  = module.exports;
 testHelper.Stex = Stex;
