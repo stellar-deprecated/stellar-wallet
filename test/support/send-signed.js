@@ -1,4 +1,4 @@
-var signedJson = require("../../lib/util/signed_json");
+var signedJson = require("../../lib/util/signed-json");
 var sign       = require("../../lib/util/sign");
 
 stex.test.supertest.Test.prototype.sendSigned = function(body, walletId, keyPair) {

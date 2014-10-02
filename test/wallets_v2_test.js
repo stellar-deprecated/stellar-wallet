@@ -1,6 +1,6 @@
 /*jshint expr: true*/
 var helper   = require("./test_helper");
-var walletV2 = require("../lib/models/wallet_v2");
+var walletV2 = require("../lib/models/wallet-v2");
 var hash     = require("../lib/util/hash");
 var Promise  = helper.Stex.Promise;
 var _        = helper.Stex._;
