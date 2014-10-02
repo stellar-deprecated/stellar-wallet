@@ -96,10 +96,10 @@ describe("POST /v2/wallets/create", function() {
   beforeEach(function(done) {
     this.params = {
       "username":         "nullstyle",
-      "walletId":         new Buffer("2").toString('base64'),
-      "salt":             "2",
+      "walletId":         new Buffer("12345678123456781234567812345678").toString('base64'),
+      "salt":             new Buffer("1234567812345678").toString('base64'),
       "kdfParams":        "{}",
-      "publicKey":        "2",
+      "publicKey":        helper.testKeyPair.publicKey,
       "mainData":         "mains",
       "mainDataHash":     hash.sha1("mains"),
       "keychainData":     "keys",
@@ -152,10 +152,20 @@ describe("POST /v2/wallets/create", function() {
   });
 
   it("fails when the walletId isn't provided", helper.blankTest("walletId"));
-  it("fails when the walletId is not a base64 encoded 16-byte value");
+  it("fails when the walletId is not a base64 encoded 32-byte value", function() {
+    this.params.walletId = "aa";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"walletId", code:"invalid_length"});
+  });
 
   it("fails when the salt isn't provided", helper.blankTest("salt"));
-  it("fails when the salt is less than 128-bits");
+  it("fails when the salt is less than 16-bytes", function() {
+    this.params.salt = "aa";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"salt", code:"invalid_length"});
+  });
 
   it("fails when the kdfParams isn't provided", helper.blankTest("kdfParams"));
   it("fails when the kdfParams is not json", function() {
@@ -166,15 +176,36 @@ describe("POST /v2/wallets/create", function() {
   });
 
   it("fails when the publicKey isn't provided", helper.blankTest("publicKey"));
-  it("fails when the publicKey cannot be an ed25519 key (i.e. 32-bytes long)");
+  it("fails when the publicKey cannot be an ed25519 key (i.e. 32-bytes long)", function() {
+    this.params.publicKey = "aa";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"publicKey", code:"invalid_length"});
+  });
 
   it("fails when the mainData isn't provided", helper.blankTest("mainData"));
-  it("fails when the mainData is too large");
   it("fails when the provided mainHash doesn't verify the mainData", helper.badHashTest("mainData"));
+  it("fails when the mainData is too large", function() {
+    var self = this;
+
+    this.params.mainData     = helper.makeString(2 * 1024 * 1024); //2 mb
+    this.params.mainDataHash = hash.sha1(this.params.mainData);
+    
+    this.submit().expect(413);
+      
+  });
 
   it("fails when the keychainData isn't provided", helper.blankTest("keychainData"));
-  it("fails when the keychainData is too large");
   it("fails when the provided keychainHash doesn't verify the keychainData", helper.badHashTest("keychainData"));
+  it("fails when the keychainData is too large", function() {
+    var self = this;
+
+    this.params.keychainData     = helper.makeString(2 * 1024 * 1024); //2 mb
+    this.params.keychainDataHash = hash.sha1(this.params.mainData);
+    
+    this.submit().expect(413);
+  });
+  
 });
 
 
