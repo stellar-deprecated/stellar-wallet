@@ -209,7 +209,7 @@ describe("POST /v2/totp/enable", function() {
       .expectBody({status: "fail", code: "not_found"});
   });
 
-  it.only("does not update the totpKey if the message isn't signed properly", function (done) {
+  it("does not update the totpKey if the message isn't signed properly", function (done) {
     var self = this;
 
     return test.supertestAsPromised(app)
