@@ -98,7 +98,7 @@ describe("POST /v2/wallets/create", function() {
       "username":         "nullstyle",
       "walletId":         new Buffer("2").toString('base64'),
       "salt":             "2",
-      "kdfParams":        "2",
+      "kdfParams":        "{}",
       "publicKey":        "2",
       "mainData":         "mains",
       "mainDataHash":     hash.sha1("mains"),
@@ -130,28 +130,51 @@ describe("POST /v2/wallets/create", function() {
   });
 
   it("fails when the username isn't provided", helper.blankTest("username"));
-  it("fails when the username has already been taken");
-  it("fails when the username contains invalid characters");
+  it("fails when the username has already been taken", function() {
+    this.params.username = "scott";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"username", code:"already_taken"});
+  });
+  
+  it("fails when the username contains invalid characters", function() {
+    this.params.username = "(╯°□°）╯︵ ┻━┻";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"username", code:"invalid_username"});
+  });
+  
+  it("fails when the username is less than 3 characters", function() {
+    this.params.username = "aa";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"username", code:"invalid_username"});
+  });
 
   it("fails when the walletId isn't provided", helper.blankTest("walletId"));
-  it("fails when the walletId is not properly base64 encoded");
+  it("fails when the walletId is not a base64 encoded 16-byte value");
 
   it("fails when the salt isn't provided", helper.blankTest("salt"));
+  it("fails when the salt is less than 128-bits");
 
   it("fails when the kdfParams isn't provided", helper.blankTest("kdfParams"));
-  it("fails when the kdfParams is not json");
+  it("fails when the kdfParams is not json", function() {
+    this.params.kdfParams = "{";
+    return this.submit()
+      .expect(400)
+      .expectBody({field: "kdfParams"});
+  });
 
   it("fails when the publicKey isn't provided", helper.blankTest("publicKey"));
-  it("fails when the publicKey is not properly base64 encoded");
   it("fails when the publicKey cannot be an ed25519 key (i.e. 32-bytes long)");
 
   it("fails when the mainData isn't provided", helper.blankTest("mainData"));
   it("fails when the mainData is too large");
-  it("fails when the provided mainHash doesn't verify the mainData");
+  it("fails when the provided mainHash doesn't verify the mainData", helper.badHashTest("mainData"));
 
   it("fails when the keychainData isn't provided", helper.blankTest("keychainData"));
   it("fails when the keychainData is too large");
-  it("fails when the provided keychainHash doesn't verify the keychainData");
+  it("fails when the provided keychainHash doesn't verify the keychainData", helper.badHashTest("keychainData"));
 });
 
 
