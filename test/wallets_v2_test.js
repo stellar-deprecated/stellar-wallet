@@ -121,31 +121,35 @@ describe("POST /v2/wallets/create", function() {
   it("creates a wallet in the db when on the happy path", function(done) {
     this.submit()
       .expect(200)
-      .end(done);
-      //TODO: confirm the row was inserted
+      .end(function() {
+        walletV2.get("nullstyle").then(function (wallet) {
+          expect(wallet).to.be.present;
+          done();
+        });
+      });
   });
 
-  it("fails when the username isn't provided");
+  it("fails when the username isn't provided", helper.blankTest("username"));
   it("fails when the username has already been taken");
   it("fails when the username contains invalid characters");
 
-  it("fails when the walletId isn't provided");
+  it("fails when the walletId isn't provided", helper.blankTest("walletId"));
   it("fails when the walletId is not properly base64 encoded");
 
-  it("fails when the salt isn't provided");
+  it("fails when the salt isn't provided", helper.blankTest("salt"));
 
-  it("fails when the kdfParams isn't provided");
+  it("fails when the kdfParams isn't provided", helper.blankTest("kdfParams"));
   it("fails when the kdfParams is not json");
 
-  it("fails when the publicKey isn't provided");
+  it("fails when the publicKey isn't provided", helper.blankTest("publicKey"));
   it("fails when the publicKey is not properly base64 encoded");
   it("fails when the publicKey cannot be an ed25519 key (i.e. 32-bytes long)");
 
-  it("fails when the mainData isn't provided");
+  it("fails when the mainData isn't provided", helper.blankTest("mainData"));
   it("fails when the mainData is too large");
   it("fails when the provided mainHash doesn't verify the mainData");
 
-  it("fails when the keychainData isn't provided");
+  it("fails when the keychainData isn't provided", helper.blankTest("keychainData"));
   it("fails when the keychainData is too large");
   it("fails when the provided keychainHash doesn't verify the keychainData");
 });
