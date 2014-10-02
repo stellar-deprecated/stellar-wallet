@@ -186,13 +186,27 @@ describe("POST /v2/totp/enable", function() {
 
 
 
-  it("fails when the totpKey missing");
-  it("fails when the totpKey is invalid");
+  it("fails when the totpKey missing", helper.blankTest("totpKey"));
+  it("fails when the totpCode is missing", function () {
+    delete this.params.totpCode;
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "invalid_totp_code"});
+  });
 
-  it("fails when the totpCode is missing");
-  it("fails when the totpCode is not the current value of the totpKey");
+  it("fails when the totpCode is not the current value of the totpKey", function () {
+    this.params.totpCode = notp.totp.gen("some other key", {});
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "invalid_totp_code"});
+  });
 
-  it("fails when the lockVersion specified in the update is not the same as the wallets current lockVersion");
+  it("fails when the lockVersion specified in the update is not the same as the wallets current lockVersion", function () {
+    this.params.lockVersion = -1;
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "not_found"});
+  });
 
   it("does not update the totpKey if the message isn't signed properly");
 });
