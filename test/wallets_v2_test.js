@@ -30,7 +30,7 @@ describe("POST /v2/wallets/show_login_params", function() {
   });
 
   it("retrieves the login params properly by username", function() {
-    return this.submit({username:"scott"}).expect(200);
+    return this.submit({username:"scott@stellar.org"}).expect(200);
   });
 
   it("fails to find the login params when none exists for the username", function() {
@@ -63,11 +63,11 @@ describe("POST /v2/wallets/show", function() {
   });
 
   it("retrieves the wallet properly", function() {
-    return this.submit({username:"scott", walletId:new Buffer("scott").toString("base64")}).expect(200);
+    return this.submit({username:"scott@stellar.org", walletId:new Buffer("scott@stellar.org").toString("base64")}).expect(200);
   });
 
   it("retrieves the wallet properly with totpCode", function() {
-    return this.submit({username:"mfa", walletId:new Buffer("mfa").toString("base64"), totpCode:notp.totp.gen("mytotpKey", {})}).expect(200);
+    return this.submit({username:"mfa@stellar.org", walletId:new Buffer("mfa@stellar.org").toString("base64"), totpCode:notp.totp.gen("mytotpKey", {})}).expect(200);
   });
 
   it("fails with 403 when the username is not found", function() {
@@ -75,19 +75,19 @@ describe("POST /v2/wallets/show", function() {
   });
 
   it("fails with 403 when the authToken is incorrect", function() {
-    return this.submit({username:"scott", walletId:"somewrongtoken"}).expect(403);
+    return this.submit({username:"scott@stellar.org", walletId:"somewrongtoken"}).expect(403);
   });
 
   it("locks an ip address out after the configured number of failed login attempts", function() {
     var self = this;
     
-    return this.lockout("scott").then(function() {    
-      self.submit({username:"scott", walletId:new Buffer("scott").toString("base64")}).expect(403);
+    return this.lockout("scott@stellar.org").then(function() {    
+      self.submit({username:"scott@stellar.org", walletId:new Buffer("scott@stellar.org").toString("base64")}).expect(403);
     });
   });
 
   it("fails when the totpToken is required and is wrong", function() {
-    return this.submit({username:"mfa", walletId:new Buffer("scott").toString("base64"), totpCode:"wrongvalue"}).expect(403);
+    return this.submit({username:"mfa@stellar.org", walletId:new Buffer("scott@stellar.org").toString("base64"), totpCode:"wrongvalue"}).expect(403);
   });
 });
 
@@ -95,7 +95,7 @@ describe("POST /v2/wallets/show", function() {
 describe("POST /v2/wallets/create", function() {
   beforeEach(function(done) {
     this.params = {
-      "username":         "nullstyle",
+      "username":         "nullstyle@stellar.org",
       "walletId":         new Buffer("12345678123456781234567812345678").toString('base64'),
       "salt":             new Buffer("1234567812345678").toString('base64'),
       "kdfParams":        "{}",
@@ -118,20 +118,19 @@ describe("POST /v2/wallets/create", function() {
   });
 
 
-  it("creates a wallet in the db when on the happy path", function(done) {
-    this.submit()
+  it("creates a wallet in the db when on the happy path", function() {
+    return this.submit()
       .expect(200)
-      .end(function() {
-        walletV2.get("nullstyle").then(function (wallet) {
-          expect(wallet).to.be.present;
-          done();
-        });
+      .then(function() {
+        return walletV2.get("nullstyle@stellar.org").then(function (wallet) {
+          expect(wallet).to.exist;
+        })
       });
   });
 
   it("fails when the username isn't provided", helper.blankTest("username"));
   it("fails when the username has already been taken", function() {
-    this.params.username = "scott";
+    this.params.username = "scott@stellar.org";
     return this.submit()
         .expect(400)
         .expectBody({field:"username", code:"already_taken"});
@@ -139,6 +138,13 @@ describe("POST /v2/wallets/create", function() {
   
   it("fails when the username contains invalid characters", function() {
     this.params.username = "(╯°□°）╯︵ ┻━┻";
+    return this.submit()
+        .expect(400)
+        .expectBody({field:"username", code:"invalid_username"});
+  });
+  
+  it("fails when the username doesnt look like an email", function() {
+    this.params.username = "scott";
     return this.submit()
         .expect(400)
         .expectBody({field:"username", code:"invalid_username"});
@@ -209,6 +215,20 @@ describe("POST /v2/wallets/create", function() {
 });
 
 
+describe("POST /v2/wallets/update", function() {
+  it("allows you to update multiple attributes of a wallet");
+  it("confirms that keychainData is stored properly after writing it to the db");
+  it("confirms that mainData is stored properly after writing it to the db");
+  
+  it("fails when signed by someone other than the owner");
+  it("fails when signed incorrectly");
+  it("fails when the lockVersion is wrong");
+  
+  it("fails when the provided mainDataHash doesn't verify the mainData");
+  it("fails when the provided keychainHash doesn't verify the keychainData");
+});
+
+
 describe("POST /v2/totp/enable", function() {
   beforeEach(function(done) {
     this.params = {
@@ -220,7 +240,7 @@ describe("POST /v2/totp/enable", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/totp/enable')
-        .sendSigned(this.params, "scott", helper.testKeyPair)
+        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
@@ -236,7 +256,7 @@ describe("POST /v2/totp/enable", function() {
       .expect(200)
       .expectBody({status: "success", newLockVersion: 1})
       .end(function () {
-        walletV2.get("scott").then(function(w) {
+        walletV2.get("scott@stellar.org").then(function(w) {
           expect(w.totpKey).to.eq(self.params.totpKey);
         })
         .finally(done);
@@ -277,7 +297,7 @@ describe("POST /v2/totp/enable", function() {
       .expect(400)
       .expectBody({status: "fail", code: "invalid_signature"})
       .end(function () {
-        walletV2.get("scott").then(function(w) {
+        walletV2.get("scott@stellar.org").then(function(w) {
           expect(w.totpKey).to.be.null;
         })
         .finally(done);

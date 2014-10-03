@@ -3154,6 +3154,10 @@
           }
         }
       }
+    },
+    "validator": {
+      "version": "3.19.0",
+      "resolved": "https://registry.npmjs.org/validator/-/validator-3.19.0.tgz"
     }
   }
 }

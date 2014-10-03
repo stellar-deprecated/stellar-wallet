@@ -80,7 +80,7 @@ describe("signedJson.middleware", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/signed_json_test')
-        .sendSigned({tableFlip: "(╯°□°）╯︵ ┻━┻"}, "scott", helper.testKeyPair)
+        .sendSigned({tableFlip: "(╯°□°）╯︵ ┻━┻"}, "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json');
     };
   });
@@ -90,7 +90,7 @@ describe("signedJson.middleware", function() {
   });
 
   it("should populate req.verified.walletId string", function() {
-    return this.submit().expectBody({ walletId:  new Buffer("scott").toString("base64") });
+    return this.submit().expectBody({ walletId:  new Buffer("scott@stellar.org").toString("base64") });
   });
 
   it("should populate req.verified.body object", function() {
@@ -116,7 +116,7 @@ describe("signedJson.middleware", function() {
   it("should return 401 Unauthorized if no the signature does not verify the body", function() {
     var signature = sign.gen("some message", helper.testKeyPair.secretKey);
     return this.submit()
-      .setAuthHeader("scott", signature)
+      .setAuthHeader("scott@stellar.org", signature)
       .expect(401);
   });
 });

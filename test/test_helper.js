@@ -69,9 +69,9 @@ var loadFixtures = function() {
     makeWallet({ id:'3', recoveryId:'3', authToken:'3', mainData:'foo3', recoveryData:'foo3', keychainData:'foo3' }),
     makeWallet({ id:'4', authToken:'4', mainData:'foo4', keychainData:'foo4' }),
 
-    makeWalletV2({username: "scott", mainData:'foo', keychainData:'foo'}),
-    makeWalletV2({username: "david", mainData:'foo', keychainData:'foo'}),
-    makeWalletV2({username: "mfa",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64")}),
+    makeWalletV2({username: "scott@stellar.org", mainData:'foo', keychainData:'foo'}),
+    makeWalletV2({username: "david@stellar.org", mainData:'foo', keychainData:'foo'}),
+    makeWalletV2({username: "mfa@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64")}),
   ]);
 };
 

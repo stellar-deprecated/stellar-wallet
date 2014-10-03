@@ -11,7 +11,8 @@
     "notp": "^2.0.2",
     "scmp": "0.0.3",
     "scrypt-hash": "^1.1.8",
-    "stex": "git+https://github.com/stellar/stex.git#master"
+    "stex": "git+https://github.com/stellar/stex.git#master",
+    "validator": "^3.19.0"
   },
   "devDependencies": {
     "gulp": "^3.8.5"
