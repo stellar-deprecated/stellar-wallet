@@ -216,7 +216,51 @@ describe("POST /v2/wallets/create", function() {
 
 
 describe("POST /v2/wallets/update", function() {
-  it("allows you to update multiple attributes of a wallet");
+  beforeEach(function(done) {
+    this.params = {
+      "lockVersion":  0,
+      "mainData":     "mains2",
+      "mainDataHash": hash.sha1("mains2"),
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/update')
+        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    this.submitSuccessfullyAndReturnWallet = function() {
+      return this.submit()
+        .expect(200)
+        .then(function () {
+          return walletV2.get("scott@stellar.org");
+        });
+    };
+
+    done();
+  });
+
+  it("succeeds on the happy path", function() {
+    return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
+      expect(wallet.mainData).to.equal("mains2");
+      expect(wallet.lockVersion).to.equal(1);
+    });
+  });
+
+  it("allows you to update multiple attributes of a wallet", function() {
+    var self = this;
+
+    self.params.keychainData = "keys2",
+    self.params.keychainDataHash = hash.sha1("keys2");
+
+    return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
+      expect(wallet.mainData).to.equal("mains2");
+      expect(wallet.keychainData).to.equal("keys2");
+    });
+  });
+
   it("confirms that keychainData is stored properly after writing it to the db");
   it("confirms that mainData is stored properly after writing it to the db");
   
