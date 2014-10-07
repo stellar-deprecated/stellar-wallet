@@ -142,6 +142,11 @@ describe("POST /wallets/show", function() {
     });
   });
 
+  it.only("doesn't allow login if the wallet has been migrated to v2", function(done) {
+    this.params.id = '5';
+    this.submit().expect(404).end(done);
+  });
+
 });
 
 describe("POST /wallets/create", function() {
@@ -547,3 +552,54 @@ describe("POST /wallets/create_recovery_data", function() {
 
   it("fails when the provided recoveryHash doesn't verify the recoveryData", helper.badHashTest("recoveryData"));
 });
+
+describe("POST /wallets/mark_migrated", function() {
+
+
+  beforeEach(function(done) {
+    this.params = {
+      "id":        "1",
+      "authToken": "1"
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/wallets/mark_migrated')
+        .send(this.params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    done();
+  });
+
+  it("marks the wallet as migrated on the happy path", function() {
+    return this.submit()
+      .expect(200)
+      .then(function() {
+        return hash.locator("1").then(function(hashedId) {
+          return db("wallets")
+            .where({id: hashedId})
+            .select()
+            .then(_.first);
+        });
+      })
+      .then(function(w) {
+        expect(w.migratedAt).to.exist;
+      });
+  });
+
+  it("fails when the wallet is not found", function() {
+    this.params.id = "notfound";
+    return this.submit().expect(404);
+  });
+
+  it("fails when the provided authToken does not match the stored token", function() {
+    this.params.authToken = "2";
+    return this.submit()
+      .expect(403)
+      .expectBody({"code": "forbidden"});
+  });
+
+});
+

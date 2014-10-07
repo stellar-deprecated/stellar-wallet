@@ -32,7 +32,8 @@ var makeWallet = function(params) {
       authTokenHash: hash.sha2(params.authToken), 
       mainData:      params.mainData, 
       recoveryData:  params.recoveryData, 
-      keychainData:  params.keychainData
+      keychainData:  params.keychainData,
+      migratedAt:    params.migratedAt
     })
     .then(function(params) {
       return db("wallets").insert(params);
@@ -68,6 +69,7 @@ var loadFixtures = function() {
     makeWallet({ id:'1', recoveryId:'1', authToken:'1', mainData:'foo', recoveryData:'foo', keychainData:'foo' }),
     makeWallet({ id:'3', recoveryId:'3', authToken:'3', mainData:'foo3', recoveryData:'foo3', keychainData:'foo3' }),
     makeWallet({ id:'4', authToken:'4', mainData:'foo4', keychainData:'foo4' }),
+    makeWallet({ id:'5', authToken:'5', mainData:'foo5', keychainData:'foo5', migratedAt: new Date() }),
 
     makeWalletV2({username: "scott@stellar.org", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "david@stellar.org", mainData:'foo', keychainData:'foo'}),
