@@ -215,7 +215,7 @@ describe("POST /v2/wallets/create", function() {
 });
 
 
-describe.only("POST /v2/wallets/update", function() {
+describe("POST /v2/wallets/update", function() {
   beforeEach(function(done) {
     this.params = {
       "lockVersion":  0,
@@ -267,7 +267,12 @@ describe.only("POST /v2/wallets/update", function() {
   
   it("fails when signed by someone other than the owner");
   it("fails when signed incorrectly");
-  it("fails when the lockVersion is wrong");
+  it("fails when the lockVersion is wrong", function() {
+    this.params.lockVersion = -1;
+    return this.submit()
+      .expect(404)
+      .expectBody({status: "fail", code: "not_found"});
+  });
   
   it("fails when the provided mainDataHash doesn't verify the mainData", helper.badHashTest("mainData"));
   it("fails when the provided keychainHash doesn't verify the keychainData", function() {
