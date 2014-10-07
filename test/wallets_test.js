@@ -142,7 +142,7 @@ describe("POST /wallets/show", function() {
     });
   });
 
-  it.only("doesn't allow login if the wallet has been migrated to v2", function(done) {
+  it("doesn't allow login if the wallet has been migrated to v2", function(done) {
     this.params.id = '5';
     this.submit().expect(404).end(done);
   });
