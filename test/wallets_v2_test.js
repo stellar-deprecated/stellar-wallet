@@ -215,7 +215,7 @@ describe("POST /v2/wallets/create", function() {
 });
 
 
-describe("POST /v2/wallets/update", function() {
+describe.only("POST /v2/wallets/update", function() {
   beforeEach(function(done) {
     this.params = {
       "lockVersion":  0,
@@ -245,6 +245,7 @@ describe("POST /v2/wallets/update", function() {
   it("succeeds on the happy path", function() {
     return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
       expect(wallet.mainData).to.equal("mains2");
+      expect(wallet.keychainData).to.equal("foo"); //i.e. didn't change
       expect(wallet.lockVersion).to.equal(1);
     });
   });
@@ -268,8 +269,13 @@ describe("POST /v2/wallets/update", function() {
   it("fails when signed incorrectly");
   it("fails when the lockVersion is wrong");
   
-  it("fails when the provided mainDataHash doesn't verify the mainData");
-  it("fails when the provided keychainHash doesn't verify the keychainData");
+  it("fails when the provided mainDataHash doesn't verify the mainData", helper.badHashTest("mainData"));
+  it("fails when the provided keychainHash doesn't verify the keychainData", function() {
+    this.params.keychainData = "keys2",
+    this.params.keychainDataHash = hash.sha1("keys2");
+
+    return helper.badHashTest("keychainData").call(this);
+  });
 });
 
 
