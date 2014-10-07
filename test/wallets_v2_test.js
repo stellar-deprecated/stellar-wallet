@@ -265,8 +265,12 @@ describe("POST /v2/wallets/update", function() {
   it("confirms that keychainData is stored properly after writing it to the db");
   it("confirms that mainData is stored properly after writing it to the db");
   
-  it("fails when signed by someone other than the owner");
-  it("fails when signed incorrectly");
+  it("fails when signed incorrectly", function() {
+    var req = this.submit();
+    req.set("Authorization", req.get("Authorization") + "a");
+    return req.expect(401);
+  });
+
   it("fails when the lockVersion is wrong", function() {
     this.params.lockVersion = -1;
     return this.submit()
