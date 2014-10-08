@@ -22,5 +22,12 @@
     "sleepTime": 250
   },
 
-  "expectedRefererDomain": "launch.stellar.org" 
+  "expectedRefererDomain": "launch.stellar.org",
+  "allowedOrigins": [
+    "*.stellar.org",
+    "stellar.org",
+    "localhost",
+    "*.localhost",
+    "*.dev"
+  ]
 }
