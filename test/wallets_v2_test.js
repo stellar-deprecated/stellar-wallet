@@ -124,7 +124,7 @@ describe("POST /v2/wallets/create", function() {
       .then(function() {
         return walletV2.get("nullstyle@stellar.org").then(function (wallet) {
           expect(wallet).to.exist;
-        })
+        });
       });
   });
 
