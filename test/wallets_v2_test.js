@@ -220,7 +220,7 @@ describe("POST /v2/wallets/update", function() {
     this.params = {
       "lockVersion":  0,
       "mainData":     "mains2",
-      "mainDataHash": hash.sha1("mains2"),
+      "mainDataHash": hash.sha1("mains2")
     };
 
     this.submit = function() {
@@ -228,7 +228,7 @@ describe("POST /v2/wallets/update", function() {
         .post('/v2/wallets/update')
         .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/);
+        .expect('Content-Type', /json/)
     };
 
     this.submitSuccessfullyAndReturnWallet = function() {
@@ -253,7 +253,7 @@ describe("POST /v2/wallets/update", function() {
   it("allows you to update multiple attributes of a wallet", function() {
     var self = this;
 
-    self.params.keychainData = "keys2",
+    self.params.keychainData = "keys2";
     self.params.keychainDataHash = hash.sha1("keys2");
 
     return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
@@ -279,11 +279,11 @@ describe("POST /v2/wallets/update", function() {
   });
   
   it("fails when the provided mainDataHash doesn't verify the mainData", helper.badHashTest("mainData"));
-  it("fails when the provided keychainHash doesn't verify the keychainData", function() {
-    this.params.keychainData = "keys2",
+  it("fails when the provided keychainHash doesn't verify the keychainData", function(done) {
+    this.params.keychainData = "keys2";
     this.params.keychainDataHash = hash.sha1("keys2");
 
-    return helper.badHashTest("keychainData").call(this);
+    return helper.badHashTest("keychainData").call(this, done);
   });
 });
 
