@@ -12,6 +12,7 @@
     "scmp": "0.0.3",
     "scrypt-hash": "^1.1.8",
     "stex": "git+https://github.com/stellar/stex.git#master",
+    "unirest": "^0.2.7",
     "validator": "^3.19.0"
   },
   "devDependencies": {

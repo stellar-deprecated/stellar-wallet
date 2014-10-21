@@ -22,5 +22,7 @@
     "sleepTime": 250
   },
 
-  "expectedRefererDomain": "launch.stellar.org" 
+  "expectedRefererDomain": "launch.stellar.org",
+  "fbgiveEndpoint": "",
+  "fbgiveAdminKey": ""
 }
