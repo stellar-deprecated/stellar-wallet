@@ -228,7 +228,7 @@ describe("POST /v2/wallets/update", function() {
         .post('/v2/wallets/update')
         .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
+        .expect('Content-Type', /json/);
     };
 
     this.submitSuccessfullyAndReturnWallet = function() {
@@ -314,11 +314,14 @@ describe("POST /v2/totp/enable", function() {
     this.submit()
       .expect(200)
       .expectBody({status: "success", newLockVersion: 1})
-      .end(function () {
-        walletV2.get("scott@stellar.org").then(function(w) {
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
           expect(w.totpKey).to.eq(self.params.totpKey);
-        })
-        .finally(done);
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
       });
   });
 
@@ -353,13 +356,184 @@ describe("POST /v2/totp/enable", function() {
       .post('/v2/totp/enable')
       .send(this.params)
       .set('Accept', 'application/json')
-      .expect(400)
-      .expectBody({status: "fail", code: "invalid_signature"})
-      .end(function () {
-        walletV2.get("scott@stellar.org").then(function(w) {
+      .expect(401)
+      .expectBody({status: "fail", code: "missing_authorization"})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
           expect(w.totpKey).to.be.null;
-        })
-        .finally(done);
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
+});
+
+describe("POST /v2/totp/disable", function() {
+  beforeEach(function(done) {
+    this.params = {
+      "lockVersion": 1, // 1 because we're sending /enable request first
+      "totpCode": notp.totp.gen("hello", {})
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/totp/disable')
+        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    // Enable TOTP before each test
+    test.supertestAsPromised(app)
+      .post('/v2/totp/enable')
+      .sendSigned({
+        "lockVersion": 0,
+        "totpKey": new Buffer("hello").toString("base64"),
+        "totpCode": notp.totp.gen("hello", {})
+      }, "scott@stellar.org", helper.testKeyPair)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .end(function() {
+        done();
+      });
+  });
+
+  it("successfully disables TOTP", function(done) {
+    this.submit()
+      .expect(200)
+      .expectBody({status: "success", newLockVersion: 2})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w.totpKey).to.be.null;
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
+
+  it("fails when the totpCode is missing", function () {
+    delete this.params.totpCode;
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "invalid_totp_code"});
+  });
+
+  it("fails when the totpCode is not the current value of the totpKey", function () {
+    this.params.totpCode = notp.totp.gen("some other key", {});
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "invalid_totp_code"});
+  });
+
+  it("fails when the lockVersion specified in the update is not the same as the wallets current lockVersion", function () {
+    this.params.lockVersion = -1;
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "not_found"});
+  });
+
+  it("does not disable TOTP if the message isn't signed properly", function (done) {
+    return test.supertestAsPromised(app)
+      .post('/v2/totp/disable')
+      .send(this.params)
+      .set('Accept', 'application/json')
+      .expect(401)
+      .expectBody({status: "fail", code: "missing_authorization"})
+      .then(function () {
+        walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w.totpKey).not.to.be.null;
+        });
+        done();
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
+});
+
+describe("POST /v2/totp/disable_lost_device", function() {
+  beforeEach(function(done) {
+    this.params = {
+      username: 'scott@stellar.org',
+      walletId: new Buffer("scott@stellar.org").toString("base64")
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/totp/disable_lost_device')
+        .send(this.params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    // Enable TOTP before each test
+    test.supertestAsPromised(app)
+      .post('/v2/totp/enable')
+      .sendSigned({
+        "lockVersion": 0,
+        "totpKey": new Buffer("hello").toString("base64"),
+        "totpCode": notp.totp.gen("hello", {})
+      }, "scott@stellar.org", helper.testKeyPair)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .end(function() {
+        done();
+      });
+  });
+
+  it("sets totpDisabledAt to current time", function(done) {
+    this.submit()
+      .expect(200)
+      .expectBody({status: "success"})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w.totpKey).not.to.be.null;
+          expect(w.totpDisabledAt).not.to.be.null;
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
+
+  it("returns success on wrong username but doesn't set totpDisabledAt", function(done) {
+    this.params.username = 'bartek@stellar.org';
+
+    this.submit()
+      .expect(200)
+      .expectBody({status: "success"})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w.totpKey).not.to.be.null;
+          expect(w.totpDisabledAt).to.be.null;
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
+
+  it("returns success on wrong walletId but doesn't set totpDisabledAt", function(done) {
+    this.params.walletId = new Buffer("scott2@stellar.org").toString("base64");
+
+    this.submit()
+      .expect(200)
+      .expectBody({status: "success"})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w.totpKey).not.to.be.null;
+          expect(w.totpDisabledAt).to.be.null;
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
       });
   });
 });
