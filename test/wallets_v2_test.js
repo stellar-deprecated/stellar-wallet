@@ -287,6 +287,48 @@ describe("POST /v2/wallets/update", function() {
   });
 });
 
+describe("POST /v2/wallets/recovery/enable", function() {
+  beforeEach(function(done) {
+    this.params = {
+      "lockVersion":  0,
+      "recoveryId":   "recoveryId",
+      "recoveryData": "foo4"
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/recovery/enable')
+        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    done();
+
+  });
+
+  it("updates recovery data", function(done) {
+    var self = this;
+
+    this.submit()
+      .expect(200)
+      .expectBody({status: "success", newLockVersion: 1})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w.recoveryId).to.eq(self.params.recoveryId);
+          expect(w.recoveryData).to.eq(self.params.recoveryData);
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
+
+
+  it("fails when the recoveryId missing", helper.blankTest("recoveryId"));
+  it("fails when the recoveryData is missing", helper.blankTest("recoveryData"));
+});
 
 describe("POST /v2/totp/enable", function() {
   beforeEach(function(done) {
