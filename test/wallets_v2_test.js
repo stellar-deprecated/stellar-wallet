@@ -330,6 +330,59 @@ describe("POST /v2/wallets/recovery/enable", function() {
   it("fails when the recoveryData is missing", helper.blankTest("recoveryData"));
 });
 
+describe("POST /v2/wallets/recovery/show", function() {
+  beforeEach(function(done) {
+    this.params = {
+      "username":  "scott@stellar.org",
+      "recoveryId":   "recoveryId"
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/recovery/show')
+        .send(this.params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    // Enable recovery before each test
+    test.supertestAsPromised(app)
+      .post('/v2/wallets/recovery/enable')
+      .sendSigned({
+        "lockVersion":  0,
+        "recoveryId":   "recoveryId",
+        "recoveryData": "foo4"
+      }, "scott@stellar.org", helper.testKeyPair)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .end(function() {
+        done();
+      });
+  });
+
+  it("shows recovery data", function() {
+    return this.submit()
+      .expect(200)
+      .expectBody({recoveryData: "foo4"});
+  });
+
+  it("fails when the username is invalid", function () {
+    this.params.username = 'bartek@stellar.org';
+    return this.submit()
+      .expect(403)
+      .expectBody({status: "fail", code: "forbidden"});
+  });
+
+  it("fails when the recoveryId is invalid", function () {
+    this.params.recoveryId = 'badId';
+    return this.submit()
+      .expect(403)
+      .expectBody({status: "fail", code: "forbidden"});
+  });
+
+  // TODO check with TOTP enabled
+});
+
 describe("POST /v2/totp/enable", function() {
   beforeEach(function(done) {
     this.params = {
