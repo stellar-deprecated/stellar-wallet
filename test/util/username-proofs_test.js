@@ -10,7 +10,7 @@ var errors         = helper.Stex.errors;
 var KEYPAIR    = helper.testKeyPair;
 var ADDRESS    = stellarAddress.addressFromPublicKey(KEYPAIR.publicKey);
 
-var GOOD_CLAIM = JSON.stringify({username: "scott", address: ADDRESS});
+var GOOD_CLAIM = JSON.stringify({username: "scott@stellar.org", address: ADDRESS});
 var GOOD_PROOF = {
   claim:     GOOD_CLAIM,
   publicKey: KEYPAIR.publicKey,
@@ -27,6 +27,13 @@ describe("usernameProofs.validate", function() {
 
 
   it("validates the proof when everything is correct", function() {
+    var validation = usernameProofs.validate(KEYPAIR.publicKey, GOOD_PROOF);
+    return expect(validation).to.be.fulfilled;
+  });
+
+  it("strips off the domain of the username when communicating with fbgive", function() {
+    this.sinon.restore();
+    this.sinon.mock(stex.fbgive).expects("post").withArgs(stex.test.sinon.match.string, {username:"scott"}).returns(Promise.resolve({address: ADDRESS}));
     var validation = usernameProofs.validate(KEYPAIR.publicKey, GOOD_PROOF);
     return expect(validation).to.be.fulfilled;
   });
