@@ -8,7 +8,7 @@ var Promise        = helper.Stex.Promise;
 var errors         = helper.Stex.errors;
 
 var KEYPAIR    = helper.testKeyPair;
-var ADDRESS    = stellarAddress.addressFromPublicKey(KEYPAIR.publicKey);
+var ADDRESS    = helper.testAddress;
 
 var GOOD_CLAIM = JSON.stringify({username: "scott@stellar.org", address: ADDRESS});
 var GOOD_PROOF = {

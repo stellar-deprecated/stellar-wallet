@@ -1,9 +1,10 @@
-var StexDev = require("stex/dev");
-var Stex    = require("stex");
-var Promise = Stex.Promise;
-var hash    = require("../lib/util/hash");
-var sign    = require("../lib/util/sign");
-process.env["NODE_ENV"]="test";
+var StexDev             = require("stex/dev");
+var Stex                = require("stex");
+var Promise             = Stex.Promise;
+var hash                = require("../lib/util/hash");
+var sign                = require("../lib/util/sign");
+var stellarAddress      = require("../lib/util/stellar-address");
+process.env["NODE_ENV"] = "test";
 
 var testHelper  = module.exports;
 testHelper.Stex = Stex;
@@ -12,6 +13,7 @@ var SEED                   = "iAziZHvikuV/KLVinhNAo15vwwFxLSq2X6H9bjNw1Ss=";
 var KEYPAIR                = sign.keyPair(SEED);
 testHelper.testKeyPairSeed = SEED;
 testHelper.testKeyPair     = KEYPAIR;
+testHelper.testAddress     = stellarAddress.addressFromPublicKey(KEYPAIR.publicKey);
 
 var clearDb = function() {
   return Promise.all([

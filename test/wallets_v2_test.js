@@ -96,6 +96,7 @@ describe("POST /v2/wallets/create", function() {
   beforeEach(function(done) {
     this.params = {
       "username":         "nullstyle@stellar.org",
+      "usernameProof":    generateUsernameProof("nullstyle@stellar.org"),
       "walletId":         new Buffer("12345678123456781234567812345678").toString('base64'),
       "salt":             new Buffer("1234567812345678").toString('base64'),
       "kdfParams":        "{}",
@@ -113,6 +114,10 @@ describe("POST /v2/wallets/create", function() {
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
+
+    this.sinon.stub(stex.fbgive, "post", function() {
+      return Promise.resolve({address: helper.testAddress});
+    });
 
     done();
   });
@@ -632,3 +637,14 @@ describe("POST /v2/totp/disable_lost_device", function() {
       });
   });
 });
+
+
+function generateUsernameProof(username) {
+  var sign = require("../lib/util/sign");
+  var claim = JSON.stringify({username: username, address: helper.testAddress});
+  return {
+    claim:     claim,
+    publicKey: helper.testKeyPair.publicKey,
+    signature: sign.gen(claim, helper.testKeyPair.secretKey)
+  };
+}
