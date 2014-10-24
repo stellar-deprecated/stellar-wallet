@@ -286,10 +286,10 @@ describe("POST /wallets/update", function() {
   it("fails when the provided authToken does not match the stored token", function(done) {
     this.params.authToken = "wrong!";
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({ 
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
@@ -297,10 +297,10 @@ describe("POST /wallets/update", function() {
   it("fails when the provided authToken is blank", function(done) {
     delete this.params.authToken;
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({ 
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
