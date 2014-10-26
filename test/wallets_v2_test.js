@@ -247,7 +247,7 @@ describe("POST /v2/wallets/update", function() {
     done();
   });
 
-  it("succeeds on the happy path", function() {
+  it("succeeds updating mainData on the happy path", function() {
     return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
       expect(wallet.mainData).to.equal("mains2");
       expect(wallet.keychainData).to.equal("foo"); //i.e. didn't change
@@ -255,16 +255,56 @@ describe("POST /v2/wallets/update", function() {
     });
   });
 
-  it("allows you to update multiple attributes of a wallet", function() {
+  it("succeeds changing password on the happy path", function() {
+    this.params = {
+      "walletId":         new Buffer("new walletId").toString('base64'),
+      "salt":             new Buffer("new salt").toString('base64'),
+      "kdfParams":        "{}",
+      "mainData":         "new mains",
+      "mainDataHash":     hash.sha1("new mains"),
+      "keychainData":     "new keys",
+      "keychainDataHash": hash.sha1("new keys"),
+      "recoveryId":       "new recoveryId",
+      "recoveryData":     "new recoveryData",
+      "lockVersion":      0
+    };
+
     var self = this;
 
-    self.params.keychainData = "keys2";
-    self.params.keychainDataHash = hash.sha1("keys2");
-
     return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
-      expect(wallet.mainData).to.equal("mains2");
-      expect(wallet.keychainData).to.equal("keys2");
+      expect(wallet.username).to.equal("scott@stellar.org"); // didn't change
+      expect(wallet.walletId).to.equal(self.params.walletId);
+      expect(wallet.mainData).to.equal(self.params.mainData);
+      expect(wallet.keychainData).to.equal(self.params.keychainData);
+      expect(wallet.recoveryId).to.equal(self.params.recoveryId);
+      expect(wallet.recoveryData).to.equal(self.params.recoveryData);
+      expect(wallet.lockVersion).to.equal(1);
     });
+  });
+
+  it("fails when one field is missing when changing password", function() {
+    this.params = {
+      "walletId":         new Buffer("new walletId").toString('base64'),
+      "salt":             new Buffer("new salt").toString('base64'),
+      "kdfParams":        "{}",
+      "mainData":         "new mains",
+      "mainDataHash":     hash.sha1("new mains"),
+      "keychainData":     "new keys",
+      "recoveryId":       "new recoveryId",
+      "recoveryData":     "new recoveryData",
+      "lockVersion":      0
+    };
+
+    return this.submit()
+        .expect(400)
+        .expectBody({status: "fail", code: "missing_field"});
+  });
+
+  it("fails when mainDataHash is missing", function() {
+    delete this.params.mainDataHash;
+    return this.submit()
+      .expect(400)
+      .expectBody({status: "fail", code: "missing_field"});
   });
 
   it("confirms that keychainData is stored properly after writing it to the db");
@@ -284,12 +324,6 @@ describe("POST /v2/wallets/update", function() {
   });
   
   it("fails when the provided mainDataHash doesn't verify the mainData", helper.badHashTest("mainData"));
-  it("fails when the provided keychainHash doesn't verify the keychainData", function(done) {
-    this.params.keychainData = "keys2";
-    this.params.keychainDataHash = hash.sha1("keys2");
-
-    return helper.badHashTest("keychainData").call(this, done);
-  });
 });
 
 describe("POST /v2/wallets/recovery/enable", function() {
@@ -425,7 +459,16 @@ describe("POST /v2/totp/enable", function() {
       });
   });
 
+  it("fails when the totpKey has been already set", function () {
+    var self = this;
 
+    return this.submit()
+      .then(function() {
+        return self.submit()
+          .expect(403)
+          .expectBody({status: "fail", code: "forbidden"})
+      });
+  });
 
   it("fails when the totpKey missing", helper.blankTest("totpKey"));
   it("fails when the totpCode is missing", function () {
