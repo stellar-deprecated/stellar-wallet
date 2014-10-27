@@ -278,10 +278,10 @@ describe("POST /wallets/update", function() {
   it("fails when the provided authToken does not match the stored token", function(done) {
     this.params.authToken = "wrong!";
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({ 
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
@@ -289,10 +289,10 @@ describe("POST /wallets/update", function() {
   it("fails when the provided authToken is blank", function(done) {
     delete this.params.authToken;
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({ 
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
@@ -386,8 +386,8 @@ describe("POST /wallets/replace", function() {
   it("fails when the provided oldAuthToken does not match the stored token from the old wallet", function(done) {
     this.params.oldAuthToken = "nogood";
     this.submit()
-      .expect(403)
-      .expectBody({ status : "fail", code: "forbidden" })
+      .expect(404)
+      .expectBody({ status : "fail", code: "not_found" })
       .end(done);
   });
 
@@ -395,10 +395,10 @@ describe("POST /wallets/replace", function() {
   it("fails when the provided oldAuthToken is blank", function(done) {
     delete this.params.oldAuthToken;
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({ 
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
@@ -406,8 +406,8 @@ describe("POST /wallets/replace", function() {
   it("fails when the provided newAuthToken does not match the stored token from the new wallet", function(done) {
     this.params.newAuthToken = "nogood";
     this.submit()
-      .expect(403)
-      .expectBody({ status : "fail", code: "forbidden" })
+      .expect(404)
+      .expectBody({ status : "fail", code: "not_found" })
       .end(done);
   });
 
@@ -416,10 +416,10 @@ describe("POST /wallets/replace", function() {
   it("fails when the provided newAuthToken is blank", function(done) {
     delete this.params.newAuthToken;
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({ 
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
@@ -542,10 +542,10 @@ describe("POST /wallets/create_recovery_data", function() {
   it("fails when the provided authToken does not match the stored token", function(done) {
     this.params.authToken = "wrong!";
     this.submit()
-      .expect(403)
+      .expect(404)
       .expectBody({
         status: "fail",
-        code:   "forbidden"
+        code:   "not_found"
       })
       .end(done);
   });
