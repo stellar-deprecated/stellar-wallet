@@ -628,14 +628,20 @@ describe("POST /v2/totp/disable_lost_device", function() {
       });
   });
 
-  it("sets totpDisabledAt to current time", function(done) {
+  it.only("sets totpDisabledAt to current time + the grace period", function(done) {
+    var Duration = require("duration-js");
     this.submit()
       .expect(200)
       .expectBody({status: "success"})
       .then(function () {
         return walletV2.get("scott@stellar.org").then(function(w) {
+
           expect(w.totpKey).not.to.be.null;
-          expect(w.totpDisabledAt).not.to.be.null;
+
+          // check time to within a 4 second window.
+          var expectedTotpDisabledAt = (new Date()).getTime() + new Duration("7d");
+          expect(w.totpDisabledAt.getTime()).to.be.within(expectedTotpDisabledAt - 2000, expectedTotpDisabledAt + 2000);
+
           done();
         });
       })
