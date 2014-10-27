@@ -264,8 +264,6 @@ describe("POST /v2/wallets/update", function() {
       "mainDataHash":     hash.sha1("new mains"),
       "keychainData":     "new keys",
       "keychainDataHash": hash.sha1("new keys"),
-      "recoveryId":       "new recoveryId",
-      "recoveryData":     "new recoveryData",
       "lockVersion":      0
     };
 
@@ -273,11 +271,11 @@ describe("POST /v2/wallets/update", function() {
 
     return this.submitSuccessfullyAndReturnWallet().then(function(wallet) {
       expect(wallet.username).to.equal("scott@stellar.org"); // didn't change
-      expect(wallet.walletId).to.equal(self.params.walletId);
+      var expectedWalletId = new Buffer(self.params.walletId || "", 'base64');
+      expectedWalletId = hash.sha2(expectedWalletId);
+      expect(wallet.walletId).to.equal(expectedWalletId);
       expect(wallet.mainData).to.equal(self.params.mainData);
       expect(wallet.keychainData).to.equal(self.params.keychainData);
-      expect(wallet.recoveryId).to.equal(self.params.recoveryId);
-      expect(wallet.recoveryData).to.equal(self.params.recoveryData);
       expect(wallet.lockVersion).to.equal(1);
     });
   });
@@ -290,8 +288,6 @@ describe("POST /v2/wallets/update", function() {
       "mainData":         "new mains",
       "mainDataHash":     hash.sha1("new mains"),
       "keychainData":     "new keys",
-      "recoveryId":       "new recoveryId",
-      "recoveryData":     "new recoveryData",
       "lockVersion":      0
     };
 
