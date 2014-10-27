@@ -87,8 +87,9 @@ describe("POST /v2/wallets/show", function() {
   });
 
   it("fails when the totpToken is required and is wrong", function() {
-    return this.submit({username:"mfa@stellar.org", walletId:new Buffer("scott@stellar.org").toString("base64"), totpCode:"wrongvalue"}).expect(403);
+    return this.submit({username:"mfa@stellar.org", walletId:new Buffer("mfa@stellar.org").toString("base64"), totpCode:"wrongvalue"}).expect(403);
   });
+
 });
 
 
