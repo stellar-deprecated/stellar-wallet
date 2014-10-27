@@ -90,6 +90,9 @@ describe("POST /v2/wallets/show", function() {
     return this.submit({username:"mfa@stellar.org", walletId:new Buffer("mfa@stellar.org").toString("base64"), totpCode:"wrongvalue"}).expect(403);
   });
 
+  it("succeeds when the totpToken is disabled", function() {
+    return this.submit({username:"mfa-disabled@stellar.org", walletId:new Buffer("mfa-disabled@stellar.org").toString("base64")}).expect(200);
+  });
 });
 
 
