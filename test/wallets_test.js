@@ -597,8 +597,8 @@ describe("POST /wallets/mark_migrated", function() {
   it("fails when the provided authToken does not match the stored token", function() {
     this.params.authToken = "2";
     return this.submit()
-      .expect(403)
-      .expectBody({"code": "forbidden"});
+      .expect(404)
+      .expectBody({"code": "not_found"});
   });
 
 });
