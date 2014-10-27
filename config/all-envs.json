@@ -24,5 +24,7 @@
 
   "expectedRefererDomain": "launch.stellar.org",
   "fbgiveEndpoint": "",
-  "fbgiveAdminKey": ""
+  "fbgiveAdminKey": "",
+
+  "allowV2": false
 }

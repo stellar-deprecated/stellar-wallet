@@ -8,5 +8,7 @@
   },
   "locatorSalt": "c280d3f1cee4ae209b18eb6abdf49f3856c6d51ad55969e58caaad8db6f334198b2ca444ed3ea6c2da440a894f83f45c7546c2b1af18f2689a328f595849f852",
   "fbgiveAdminKey": "1234",
-  "fbgiveEndpoint": "http://localhost:3001"
+  "fbgiveEndpoint": "http://localhost:3001",
+
+  "allowV2": true
 }
