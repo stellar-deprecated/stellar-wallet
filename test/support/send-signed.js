@@ -1,10 +1,10 @@
 var signedJson = require("../../lib/util/signed-json");
 var sign       = require("../../lib/util/sign");
 
-stex.test.supertest.Test.prototype.sendSigned = function(body, walletId, keyPair) {
+stex.test.supertest.Test.prototype.sendSigned = function(body, username, walletId, keyPair) {
   var rawBody       = JSON.stringify(body);
   var signature     = sign.gen(rawBody, keyPair.secretKey);
-  var authorization = authHeader(walletId, signature);
+  var authorization = authHeader(username, walletId, signature);
 
   this.type("json");
   this.set("Authorization", authorization);
@@ -13,8 +13,8 @@ stex.test.supertest.Test.prototype.sendSigned = function(body, walletId, keyPair
   return this;
 };
 
-stex.test.supertest.Test.prototype.setAuthHeader = function(walletId, signature) {
-  this.set("Authorization", authHeader(walletId, signature));
+stex.test.supertest.Test.prototype.setAuthHeader = function(username, walletId, signature) {
+  this.set("Authorization", authHeader(username, walletId, signature));
   return this;
 };
 
@@ -25,7 +25,7 @@ stex.router.post("/v2/signed_json_test", signedJson.middleware, function(req, re
 });
 
 
-function authHeader(walletId, signature) {
+function authHeader(username, walletId, signature) {
   var wallerId = new Buffer(walletId).toString('base64');
-  return 'STELLAR-WALLET-V2 wallet-id=' + wallerId + ' signature=' + signature;
+  return 'STELLAR-WALLET-V2 username=' + username + ' wallet-id=' + wallerId + ' signature=' + signature;
 }
