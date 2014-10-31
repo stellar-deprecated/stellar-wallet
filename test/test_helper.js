@@ -60,9 +60,10 @@ var makeWalletV2 = function(params) {
       p: 1
     }),
 
-    mainData:      params.mainData, 
-    keychainData:  params.keychainData,
-    totpKey:       params.totpKey
+    mainData:       params.mainData, 
+    keychainData:   params.keychainData,
+    totpKey:        params.totpKey,
+    totpDisabledAt: params.totpDisabledAt,
   });
 };
 
@@ -76,6 +77,7 @@ var loadFixtures = function() {
     makeWalletV2({username: "scott@stellar.org", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "david@stellar.org", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "mfa@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64")}),
+    makeWalletV2({username: "mfa-disabled@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64"), totpDisabledAt:new Date()}),
   ]);
 };
 

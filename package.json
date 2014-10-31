@@ -7,6 +7,7 @@
     "test": "NODE_ENV=test gulp db:setup && gulp test && gulp submit-coverage"
   },
   "dependencies": {
+    "duration-js": "^3.3.4",
     "ed25519": "0.0.2",
     "notp": "^2.0.2",
     "scmp": "0.0.3",

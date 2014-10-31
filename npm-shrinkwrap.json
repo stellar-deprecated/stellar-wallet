@@ -2,6 +2,11 @@
   "name": "stellar-wallet",
   "version": "0.0.1",
   "dependencies": {
+    "duration-js": {
+      "version": "3.3.4",
+      "from": "duration-js@",
+      "resolved": "https://registry.npmjs.org/duration-js/-/duration-js-3.3.4.tgz"
+    },
     "ed25519": {
       "version": "0.0.2",
       "from": "ed25519@*",
