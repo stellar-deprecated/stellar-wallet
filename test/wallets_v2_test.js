@@ -628,7 +628,7 @@ describe("POST /v2/totp/disable_lost_device", function() {
       });
   });
 
-  it.only("sets totpDisabledAt to current time + the grace period", function(done) {
+  it("sets totpDisabledAt to current time + the grace period", function(done) {
     var Duration = require("duration-js");
     this.submit()
       .expect(200)
