@@ -80,7 +80,7 @@ describe("signedJson.middleware", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/signed_json_test')
-        .sendSigned({tableFlip: "(╯°□°）╯︵ ┻━┻"}, "scott@stellar.org", helper.testKeyPair)
+        .sendSigned({tableFlip: "(╯°□°）╯︵ ┻━┻"}, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json');
     };
   });
@@ -109,14 +109,20 @@ describe("signedJson.middleware", function() {
 
   it("should return 401 Unauthorized if no the wallet-id is not found", function() {
     return this.submit()
-      .setAuthHeader('notfound', "somesignature")
+      .setAuthHeader('scott@stellar.org', 'notfound', "somesignature")
+      .expect(401);
+  });
+
+  it("should return 401 Unauthorized if no the username and walletID are from different records", function() {
+    return this.submit()
+      .setAuthHeader('david@stellar.org', "scott@stellar.org", "somesignature")
       .expect(401);
   });
 
   it("should return 401 Unauthorized if no the signature does not verify the body", function() {
     var signature = sign.gen("some message", helper.testKeyPair.secretKey);
     return this.submit()
-      .setAuthHeader("scott@stellar.org", signature)
+      .setAuthHeader("scott@stellar.org", "scott@stellar.org", signature)
       .expect(401);
   });
 });

@@ -277,7 +277,7 @@ describe("POST /v2/wallets/update", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/wallets/update')
-        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .sendSigned(this.params, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
@@ -379,7 +379,7 @@ describe("POST /v2/wallets/recovery/enable", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/wallets/recovery/enable')
-        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .sendSigned(this.params, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
@@ -433,7 +433,7 @@ describe("POST /v2/wallets/recovery/show", function() {
         "lockVersion":  0,
         "recoveryId":   "recoveryId",
         "recoveryData": "foo4"
-      }, "scott@stellar.org", helper.testKeyPair)
+      }, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .end(function() {
@@ -475,7 +475,7 @@ describe("POST /v2/totp/enable", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/totp/enable')
-        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .sendSigned(this.params, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
@@ -565,7 +565,7 @@ describe("POST /v2/totp/disable", function() {
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/totp/disable')
-        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .sendSigned(this.params, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
@@ -577,7 +577,7 @@ describe("POST /v2/totp/disable", function() {
         "lockVersion": 0,
         "totpKey": new Buffer("hello").toString("base64"),
         "totpCode": notp.totp.gen("hello", {})
-      }, "scott@stellar.org", helper.testKeyPair)
+      }, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .end(function() {
@@ -662,7 +662,7 @@ describe("POST /v2/totp/disable_lost_device", function() {
         "lockVersion": 0,
         "totpKey": new Buffer("hello").toString("base64"),
         "totpCode": notp.totp.gen("hello", {})
-      }, "scott@stellar.org", helper.testKeyPair)
+      }, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .end(function() {
