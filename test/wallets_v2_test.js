@@ -553,6 +553,26 @@ describe("POST /v2/totp/enable", function() {
         done(err);
       });
   });
+
+  it("clears the totpDisabledAt column", function(done) {
+    var self = this;
+
+    return test.supertestAsPromised(app)
+      .post('/v2/totp/enable')
+      .sendSigned(this.params, "mfa-disabled@stellar.org", helper.testKeyPair)
+      .set('Accept', 'application/json')
+      .expect(200)
+      .then(function () {
+        return walletV2.get("mfa-disabled@stellar.org").then(function(w) {
+          expect(w.totpDisabledAt).to.be.null;
+          expect(w.totpKey).to.eq(self.params.totpKey);
+          done();
+        });
+      })
+      .catch(function(err) {
+        done(err);
+      });
+  });
 });
 
 describe("POST /v2/totp/disable", function() {
