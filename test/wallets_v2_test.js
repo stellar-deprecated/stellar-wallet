@@ -38,6 +38,48 @@ describe("POST /v2/wallets/show_login_params", function() {
   });
 });
 
+describe("POST /v2/wallet/get_lock_version", function() {
+  beforeEach(function(done) {
+    this.params = {
+      username: 'scott@stellar.org'
+    };
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/get_lock_version')
+        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    this.submitNotSigned = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/get_lock_version')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
+    done();
+  });
+
+  it("gets lock version", function() {
+    return this.submit()
+      .expect(200)
+      .expectBody({lockVersion: 0});
+  });
+
+  it("fails on incorrect username", function() {
+    this.params.username = 'other_username';
+    return this.submit()
+      .expect(404);
+  });
+
+  it("fails on not signed body", function() {
+    return this.submitNotSigned()
+      .expect(401);
+  });
+});
+
 describe("POST /v2/wallets/show", function() {
   beforeEach(function(done) {
     this.submit = function(params) {
@@ -686,7 +728,6 @@ describe("POST /v2/totp/disable_lost_device", function() {
       });
   });
 });
-
 
 function generateUsernameProof(username) {
   var sign = require("../lib/util/sign");
