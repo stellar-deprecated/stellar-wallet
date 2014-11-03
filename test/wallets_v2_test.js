@@ -52,6 +52,13 @@ describe("POST /v2/wallet/get_lock_version", function() {
         .expect('Content-Type', /json/);
     };
 
+    this.submitNotSigned = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/get_lock_version')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
     done();
   });
 
@@ -65,6 +72,11 @@ describe("POST /v2/wallet/get_lock_version", function() {
     this.params.username = 'other_username';
     return this.submit()
       .expect(404);
+  });
+
+  it("fails on not signed body", function() {
+    return this.submitNotSigned()
+      .expect(401);
   });
 });
 
