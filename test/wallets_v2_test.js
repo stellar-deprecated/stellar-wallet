@@ -40,14 +40,12 @@ describe("POST /v2/wallets/show_login_params", function() {
 
 describe("POST /v2/wallet/get_lock_version", function() {
   beforeEach(function(done) {
-    this.params = {
-      username: 'scott@stellar.org'
-    };
+    this.params = {};
 
     this.submit = function() {
       return test.supertestAsPromised(app)
         .post('/v2/wallets/get_lock_version')
-        .sendSigned(this.params, "scott@stellar.org", helper.testKeyPair)
+        .sendSigned(this.params, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     };
@@ -66,12 +64,6 @@ describe("POST /v2/wallet/get_lock_version", function() {
     return this.submit()
       .expect(200)
       .expectBody({lockVersion: 0});
-  });
-
-  it("fails on incorrect username", function() {
-    this.params.username = 'other_username';
-    return this.submit()
-      .expect(404);
   });
 
   it("fails on not signed body", function() {
@@ -559,7 +551,7 @@ describe("POST /v2/totp/enable", function() {
 
     return test.supertestAsPromised(app)
       .post('/v2/totp/enable')
-      .sendSigned(this.params, "mfa-disabled@stellar.org", helper.testKeyPair)
+      .sendSigned(this.params, "mfa-disabled@stellar.org", "mfa-disabled@stellar.org", helper.testKeyPair)
       .set('Accept', 'application/json')
       .expect(200)
       .then(function () {
