@@ -534,7 +534,7 @@ describe("POST /v2/totp/enable", function() {
       .send(this.params)
       .set('Accept', 'application/json')
       .expect(401)
-      .expectBody({status: "fail", code: "missing_authorization"})
+      .expectBody({status: "fail", code: "malformed_authorization"})
       .then(function () {
         return walletV2.get("scott@stellar.org").then(function(w) {
           expect(w.totpKey).to.be.null;
@@ -639,7 +639,7 @@ describe("POST /v2/totp/disable", function() {
       .send(this.params)
       .set('Accept', 'application/json')
       .expect(401)
-      .expectBody({status: "fail", code: "missing_authorization"})
+      .expectBody({status: "fail", code: "malformed_authorization"})
       .then(function () {
         walletV2.get("scott@stellar.org").then(function(w) {
           expect(w.totpKey).not.to.be.null;
