@@ -27,5 +27,5 @@ stex.router.post("/v2/signed_json_test", signedJson.middleware, function(req, re
 
 function authHeader(username, walletId, signature) {
   var wallerId = new Buffer(walletId).toString('base64');
-  return 'STELLAR-WALLET-V2 username=' + username + ' wallet-id=' + wallerId + ' signature=' + signature;
+  return 'STELLAR-WALLET-V2 username="' + username + '", wallet-id="' + wallerId + '", signature="' + signature + '"';
 }
