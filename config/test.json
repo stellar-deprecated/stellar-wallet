@@ -14,5 +14,6 @@
     "db": 1
   },
 
-  "allowV2": true
+  "allowV2": true,
+  "requireUsernameProofs": false
 }

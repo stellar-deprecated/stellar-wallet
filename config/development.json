@@ -10,5 +10,6 @@
   "fbgiveAdminKey": "1234",
   "fbgiveEndpoint": "http://localhost:3001",
 
-  "allowV2": true
+  "allowV2": true,
+  "requireUsernameProofs": false
 }
