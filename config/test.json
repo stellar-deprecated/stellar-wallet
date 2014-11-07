@@ -15,5 +15,5 @@
   },
 
   "allowV2": true,
-  "requireUsernameProofs": false
+  "requireUsernameProofs": true
 }
