@@ -11,5 +11,5 @@
   "fbgiveEndpoint": "http://localhost:3001",
 
   "allowV2": true,
-  "useFbgive": false
+  "useFbgive": true
 }
