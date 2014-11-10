@@ -27,5 +27,6 @@
   "fbgiveAdminKey": "",
 
   "allowV2": false,
-  "totpDisableGracePeriod": "7d"
+  "totpDisableGracePeriod": "7d",
+  "totpWindow": 1
 }

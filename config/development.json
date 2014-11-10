@@ -11,5 +11,6 @@
   "fbgiveEndpoint": "http://localhost:3001",
 
   "allowV2": true,
-  "useFbgive": true
+  "useFbgive": true,
+  "requireUsernameProofs": true
 }

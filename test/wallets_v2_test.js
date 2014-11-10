@@ -112,6 +112,12 @@ describe("POST /v2/wallets/show", function() {
     return this.submit({username:"scott@stellar.org", walletId:"somewrongtoken"}).expect(403);
   });
 
+  it("fails with 403 when the totpCode is over 60 seconds old", function() {
+    var thirtySecondsAgo = new Date().getTime() - (60 * 1000);
+    var code = notp.totp.gen("mytotpKey", {_t: thirtySecondsAgo});
+    return this.submit({username:"mfa@stellar.org", walletId:new Buffer("mfa@stellar.org").toString("base64"), totpCode: code}).expect(403);
+  });
+
   it("locks an ip address out after the configured number of failed login attempts", function() {
     var self = this;
     
