@@ -409,6 +409,63 @@ describe("POST /v2/wallets/recovery/enable", function() {
   it("fails when the recoveryData is missing", helper.blankTest("recoveryData"));
 });
 
+describe("POST /v2/wallets/delete", function() {
+  beforeEach(function() {
+    this.username = "scott@stellar.org";
+    this.walletId = "scott@stellar.org";
+    this.params = {};
+
+    this.submit = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/delete')
+        .sendSigned(this.params, this.username, this.walletId, helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+  });
+
+  it("deletes the wallet", function(done) {
+    return this.submit()
+      .expect(200)
+      .expectBody({})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(done);
+      })
+      .catch(function(err) {
+        expect(err.name).to.eq('RecordNotFound');
+        done();
+      });
+  });
+
+  it("fails when the walletId is invalid", function (done) {
+    this.walletId = 'badId';
+    return this.submit()
+      .expect(401)
+      .expectBody({status: "fail", code: "invalid_signature"})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w).not.to.be.null;
+          done();
+        });
+      })
+      .catch(done);
+  });
+
+  it("fails when the username is invalid", function (done) {
+    this.username = 'bartek@stellar.org';
+    return this.submit()
+      .expect(401)
+      .expectBody({status: "fail", code: "invalid_signature"})
+      .then(function () {
+        return walletV2.get("scott@stellar.org").then(function(w) {
+          expect(w).not.to.be.null;
+          done();
+        });
+      })
+      .catch(done);
+  });
+});
+
 describe("POST /v2/wallets/recovery/show", function() {
   beforeEach(function(done) {
     this.params = {
