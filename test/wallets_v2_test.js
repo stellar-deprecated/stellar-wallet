@@ -122,7 +122,7 @@ describe("POST /v2/wallets/show", function() {
     var self = this;
     
     return this.lockout("scott@stellar.org").then(function() {    
-      self.submit({username:"scott@stellar.org", walletId:new Buffer("scott@stellar.org").toString("base64")}).expect(403);
+      return self.submit({username:"scott@stellar.org", walletId:new Buffer("scott@stellar.org").toString("base64")}).expect(403);
     });
   });
 
