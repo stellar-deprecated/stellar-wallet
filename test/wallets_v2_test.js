@@ -426,20 +426,16 @@ describe("POST /v2/wallets/delete", function() {
     };
   });
 
-  it("deletes the wallet", function(done) {
+  it("deletes the wallet", function() {
     return this.submit()
       .expect(200)
       .expectBody({})
       .then(function () {
-        return walletV2.get("scott@stellar.org").then(done);
-      })
-      .catch(function(err) {
-        expect(err.name).to.eq('RecordNotFound');
-        done();
+        expect(walletV2.get("scott@stellar.org")).to.be.rejectedWith(helper.Stex.errors.RecordNotFound);
       });
   });
 
-  it("fails when the walletId is invalid", function (done) {
+  it("fails when the walletId is invalid", function () {
     this.params.walletId = 1;
     return this.submit()
       .expect(401)
@@ -447,13 +443,11 @@ describe("POST /v2/wallets/delete", function() {
       .then(function () {
         return walletV2.get("scott@stellar.org").then(function(w) {
           expect(w).not.to.be.null;
-          done();
         });
-      })
-      .catch(done);
+      });
   });
 
-  it("fails when the walletId is invalid", function (done) {
+  it("fails when the walletId is invalid", function () {
     this.params.walletId = 'badId';
     return this.submit()
       .expect(401)
@@ -461,13 +455,11 @@ describe("POST /v2/wallets/delete", function() {
       .then(function () {
         return walletV2.get("scott@stellar.org").then(function(w) {
           expect(w).not.to.be.null;
-          done();
         });
-      })
-      .catch(done);
+      });
   });
 
-  it("fails when the username is invalid", function (done) {
+  it("fails when the username is invalid", function () {
     this.params.username = 'bartek@stellar.org';
     return this.submit()
       .expect(401)
@@ -475,10 +467,8 @@ describe("POST /v2/wallets/delete", function() {
       .then(function () {
         return walletV2.get("scott@stellar.org").then(function(w) {
           expect(w).not.to.be.null;
-          done();
         });
-      })
-      .catch(done);
+      });
   });
 });
 
