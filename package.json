@@ -9,6 +9,7 @@
   "dependencies": {
     "duration-js": "^3.3.4",
     "ed25519": "0.0.2",
+    "later": "1.1.6",
     "notp": "^2.0.2",
     "scmp": "0.0.3",
     "scrypt-hash": "^1.1.8",
