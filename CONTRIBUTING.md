@@ -46,7 +46,7 @@ an issue number.
 * [Bug tracker (Github)](https://github.com/stellar/stellar-wallet/issues)
 * [Contributor License Agreement](Contributor License Agreement)
 * [Explore the API](https://www.stellar.org/api/)
-* [Readme for stellar-wallet](https://github.com/stellar/stellar-wallet/blob/master/README.md)
+* [Readme for stellar-wallet](https://github.com/stellar/stellar-wallet/blob/master/readme.md)
 * #stellar-dev IRC channel on freenode.org
 
 
