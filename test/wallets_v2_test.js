@@ -133,6 +133,34 @@ describe("POST /v2/wallets/show", function() {
   it("succeeds when the totpToken is disabled", function() {
     return this.submit({username:"mfa-disabled@stellar.org", walletId:new Buffer("mfa-disabled@stellar.org").toString("base64")}).expect(200);
   });
+
+  it("resets the totpKey and totpDisabled after the grace period has elapsed", function() {
+    var username = "mfa-disabled@stellar.org";
+    return this.submit({username:username, walletId:new Buffer(username).toString("base64")})
+      .expect(200)
+      .then(function() {
+        return walletV2.get(username);
+      })
+      .then(function(wallet) {
+        expect(wallet.totpKey).to.be.null;
+        expect(wallet.totpDisabledAt).to.be.null;
+      })
+      ;
+  });
+
+  it("resets totpDisabled but leaves totpKey in place before the grace period has elapsed", function() {
+    var username = "mfa-disabling@stellar.org";
+    return this.submit({username:username, walletId:new Buffer(username).toString("base64"), totpCode:notp.totp.gen("mytotpKey", {})})
+      .expect(200)
+      .then(function() {
+        return walletV2.get(username);
+      })
+      .then(function(wallet) {
+        expect(wallet.totpKey).not.to.be.null;
+        expect(wallet.totpDisabledAt).to.be.null;
+      })
+      ;
+  });
 });
 
 

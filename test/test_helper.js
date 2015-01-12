@@ -68,6 +68,9 @@ var makeWalletV2 = function(params) {
 };
 
 var loadFixtures = function() {
+  var now               = new Date();
+  var tenMinutesFromNow = new Date((new Date()).getTime() + (1000 * 60 * 10));
+
   return Promise.all([
     makeWallet({ id:'1', recoveryId:'1', authToken:'1', mainData:'foo', recoveryData:'foo', keychainData:'foo' }),
     makeWallet({ id:'3', recoveryId:'3', authToken:'3', mainData:'foo3', recoveryData:'foo3', keychainData:'foo3' }),
@@ -77,7 +80,8 @@ var loadFixtures = function() {
     makeWalletV2({username: "scott@stellar.org", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "david@stellar.org", mainData:'foo', keychainData:'foo'}),
     makeWalletV2({username: "mfa@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64")}),
-    makeWalletV2({username: "mfa-disabled@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64"), totpDisabledAt:new Date()}),
+    makeWalletV2({username: "mfa-disabled@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64"), totpDisabledAt:now}),
+    makeWalletV2({username: "mfa-disabling@stellar.org",   mainData:'foo', keychainData:'foo', totpKey:new Buffer('mytotpKey').toString("base64"), totpDisabledAt:tenMinutesFromNow}),
   ]);
 };
 
