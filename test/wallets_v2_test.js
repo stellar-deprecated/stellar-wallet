@@ -137,6 +137,7 @@ describe("POST /v2/wallets/show", function() {
   it("resets the totpKey and totpDisabled after the grace period has elapsed", function() {
     var username = "mfa-disabled@stellar.org";
     return this.submit({username:username, walletId:new Buffer(username).toString("base64")})
+      .expect(200)
       .then(function() {
         return walletV2.get(username);
       })
@@ -150,6 +151,7 @@ describe("POST /v2/wallets/show", function() {
   it("resets totpDisabled but leaves totpKey in place before the grace period has elapsed", function() {
     var username = "mfa-disabling@stellar.org";
     return this.submit({username:username, walletId:new Buffer(username).toString("base64"), totpCode:notp.totp.gen("mytotpKey", {})})
+      .expect(200)
       .then(function() {
         return walletV2.get(username);
       })
