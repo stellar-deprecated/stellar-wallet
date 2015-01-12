@@ -736,6 +736,14 @@ describe("POST /v2/totp/disable_lost_device", function() {
         .expect('Content-Type', /json/);
     };
 
+    this.submitShow = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/wallets/show')
+        .send(this.params)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
+    };
+
     // Enable TOTP before each test
     test.supertestAsPromised(app)
       .post('/v2/totp/enable')
@@ -749,6 +757,13 @@ describe("POST /v2/totp/disable_lost_device", function() {
       .end(function() {
         done();
       });
+
+    this.clock = this.sinon.useFakeTimers((new Date()).getTime());
+  });
+
+  afterEach(function(done) {
+    this.clock.restore();
+    done();
   });
 
   it("sets totpDisabledAt to current time + the grace period", function(done) {
@@ -770,6 +785,25 @@ describe("POST /v2/totp/disable_lost_device", function() {
       })
       .catch(function(err) {
         done(err);
+      });
+  });
+
+  it("returns the wallet after the grace period", function() {
+    var self = this;
+    var Duration = require("duration-js");
+    return this.submit()
+      .expect(200)
+      .expectBody({status: "success"})
+      .then(function () {
+        self.clock.tick((new Duration("7d")) + 600);
+        return self.submitShow()
+          .expect(200);
+      })
+      .then(function() {
+        // Check if user is able to get the wallet again.
+        // (https://github.com/stellar/stellar-wallet/issues/62)
+        return self.submitShow()
+          .expect(200);
       });
   });
 
