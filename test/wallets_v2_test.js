@@ -82,6 +82,33 @@ describe("POST /v2/wallets/show", function() {
         .expect('Content-Type', /json/);
     };
 
+    this.submitTotpEnable = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/totp/enable')
+        .sendSigned({
+          "lockVersion": 0,
+          "totpKey": new Buffer("hello").toString("base64"),
+          "totpCode": notp.totp.gen("hello", {})
+        }, "scott@stellar.org", "scott@stellar.org", helper.testKeyPair)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .expectBody({status: "success"});
+    };
+
+    this.submitDisableLostDevice = function() {
+      return test.supertestAsPromised(app)
+        .post('/v2/totp/disable_lost_device')
+        .send({
+          username: "scott@stellar.org",
+          walletId: new Buffer("scott@stellar.org").toString("base64")
+        })
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .expectBody({status: "success"});
+    };
+
     this.lockout = function(username) {
       return Promise.all([
         this.submit({username:username, walletId:"somewrongtoken"}).expect(403),
@@ -132,6 +159,65 @@ describe("POST /v2/wallets/show", function() {
 
   it("succeeds when the totpToken is disabled", function() {
     return this.submit({username:"mfa-disabled@stellar.org", walletId:new Buffer("mfa-disabled@stellar.org").toString("base64")}).expect(200);
+  });
+
+  it("resets the totpKey and totpDisabled after the grace period has elapsed", function(done) {
+    var self = this;
+    var clock = this.sinon.useFakeTimers((new Date()).getTime());
+    var Duration = require("duration-js");
+    return this.submitTotpEnable()
+      .then(function () {
+        return self.submitDisableLostDevice();
+      })
+      .then(function() {
+        clock.tick((new Duration("7d")) + 600);
+        return self.submit({
+            username: "scott@stellar.org",
+            walletId: new Buffer("scott@stellar.org").toString("base64")
+          })
+          .expect(200);
+      })
+      .then(function() {
+        // Check if user is able to get the wallet again.
+        // (https://github.com/stellar/stellar-wallet/issues/62)
+        return self.submit({
+            username: "scott@stellar.org",
+            walletId: new Buffer("scott@stellar.org").toString("base64")
+          })
+          .expect(200);
+      })
+      .then(function() {
+        return walletV2.get("scott@stellar.org").then(function (wallet) {
+          expect(wallet.totpKey).to.be.null;
+          expect(wallet.totpDisabledAt).to.be.null;
+          clock.restore();
+          done();
+        });
+      });
+  });
+
+  it("resets the totpDisabled but leaves totpKey in place before the grace period has elapsed", function(done) {
+    var self = this;
+    return this.submitTotpEnable()
+      .then(function () {
+        return self.submitDisableLostDevice();
+      })
+      .then(function() {
+        var code = notp.totp.gen("hello");
+        return self.submit({
+            username: "scott@stellar.org",
+            walletId: new Buffer("scott@stellar.org").toString("base64"),
+            totpCode: code
+          })
+          .expect(200);
+      })
+      .then(function() {
+        return walletV2.get("scott@stellar.org").then(function (wallet) {
+          expect(wallet.totpKey).to.exist;
+          expect(wallet.totpDisabledAt).to.be.null;
+          done();
+        });
+      });
   });
 });
 
@@ -736,14 +822,6 @@ describe("POST /v2/totp/disable_lost_device", function() {
         .expect('Content-Type', /json/);
     };
 
-    this.submitShow = function() {
-      return test.supertestAsPromised(app)
-        .post('/v2/wallets/show')
-        .send(this.params)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/);
-    };
-
     // Enable TOTP before each test
     test.supertestAsPromised(app)
       .post('/v2/totp/enable')
@@ -757,13 +835,6 @@ describe("POST /v2/totp/disable_lost_device", function() {
       .end(function() {
         done();
       });
-
-    this.clock = this.sinon.useFakeTimers((new Date()).getTime());
-  });
-
-  afterEach(function(done) {
-    this.clock.restore();
-    done();
   });
 
   it("sets totpDisabledAt to current time + the grace period", function(done) {
@@ -785,25 +856,6 @@ describe("POST /v2/totp/disable_lost_device", function() {
       })
       .catch(function(err) {
         done(err);
-      });
-  });
-
-  it("returns the wallet after the grace period", function() {
-    var self = this;
-    var Duration = require("duration-js");
-    return this.submit()
-      .expect(200)
-      .expectBody({status: "success"})
-      .then(function () {
-        self.clock.tick((new Duration("7d")) + 600);
-        return self.submitShow()
-          .expect(200);
-      })
-      .then(function() {
-        // Check if user is able to get the wallet again.
-        // (https://github.com/stellar/stellar-wallet/issues/62)
-        return self.submitShow()
-          .expect(200);
       });
   });
 
