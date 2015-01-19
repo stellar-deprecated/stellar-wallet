@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 services:
-  - mysql
-  - redis
+- mysql
+- redis
 notifications:
-  slack: stellarfoundation:xOJMGp50Rwbq6w59y7HB7pXS
+  slack:
+    secure: SlpY9HUA8yJveU7VJTAcJpCMSxMD9+4MvEktFvv4RdwhfGQMmmWdHUk6kIa/l52TvFRRzUMGaD93N00E0b3eTs1OhTEhubLQ62NBLc5r6UdQ7WO0oVsO6bQJIOFgV7imEdxu5wtLyn7+lFCCA+n6fExnHDy04V1D+psvHEZvoAg=
