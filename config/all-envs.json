@@ -28,5 +28,12 @@
 
   "allowV2": false,
   "totpDisableGracePeriod": "7d",
-  "totpWindow": 1
+  "totpWindow": 1,
+  "allowedOrigins": [
+    "*.stellar.org",
+    "stellar.org",
+    "localhost",
+    "*.localhost",
+    "*.dev"
+  ]
 }
