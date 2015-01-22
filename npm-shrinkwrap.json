@@ -437,7 +437,7 @@
     },
     "stex": {
       "version": "0.1.0",
-      "resolved": "git+https://github.com/stellar/stex.git#c41ebe2f706a2128acab7adfdfb9b088398829f0",
+      "resolved": "git+https://github.com/stellar/stex.git#87ba2a9ece9942ead0302f723dcf2b17cbeeee11",
       "dependencies": {
         "bluebird": {
           "version": "2.8.2",
