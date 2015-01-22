@@ -34,6 +34,7 @@
     "stellar.org",
     "localhost",
     "*.localhost",
-    "*.dev"
+    "*.dev",
+    "credex.coinexgateway.com"
   ]
 }
