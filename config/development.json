@@ -12,5 +12,5 @@
 
   "allowV2": true,
   "useFbgive": true,
-  "requireUsernameProofs": true
+  "requireUsernameProofs": false
 }
