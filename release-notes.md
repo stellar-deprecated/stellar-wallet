@@ -8,8 +8,9 @@
 
 ###New Features and Changes
 
+ - Pull Request [73](https://github.com/stellar/stellar-wallet/pull/73) Change requireUsernameProofs to default false
  - [67](https://github.com/stellar/stellar-wallet/pull/67) and [68](https://github.com/stellar/stellar-wallet/pull/68) Upgrade stex, enable CORS restrictions 
-  - [69](https://github.com/stellar/stellar-wallet/pull/69) Allow coinex trading client
+ - [69](https://github.com/stellar/stellar-wallet/pull/69) Allow coinex trading client
  
 
 ###Bug Fixes
