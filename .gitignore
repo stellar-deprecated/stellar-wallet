@@ -10,3 +10,4 @@ newrelic_agent.log
 stellar-wallet.sublime-workspace
 docs/
 coverage/
+*.heapsnapshot
