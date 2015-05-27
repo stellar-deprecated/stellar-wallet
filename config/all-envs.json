@@ -3,6 +3,7 @@
 // thus, these are the default values that can be overridden in the other files
 
 {
+  "appName":         "stellar-wallet",
   "showStackTraces": true,
   "logLevel":        "debug",
   "logTarget":       "humanizer",
