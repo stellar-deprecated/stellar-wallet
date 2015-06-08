@@ -14,7 +14,7 @@
     "scrypt-hash": "^1.1.8",
     "stellar-base": "0.0.11",
     "stellar-lib": "^0.9.6",
-    "stex": "git+https://github.com/stellar/stex.git#master",
+    "stex": "stellar/stex#master",
     "unirest": "^0.2.7",
     "validator": "^3.19.0"
   },
