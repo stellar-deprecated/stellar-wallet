@@ -8,13 +8,13 @@
   },
   "dependencies": {
     "duration-js": "^3.3.4",
-    "ed25519": "0.0.2",
+    "ed25519": "0.0.4",
     "notp": "^2.0.2",
     "scmp": "0.0.3",
-    "scrypt-hash": "^1.1.8",
-    "stellar-base": "0.3.1",
+    "scrypt-hash": "^1.1.14",
+    "stellar-base": "0.7.0",
     "stellar-lib": "^0.9.6",
-    "stex": "stellar/stex#master",
+    "stex": "stellar/stex#bbe9dbe0355f9280feb1928aaeba3a9e96a36e48",
     "unirest": "^0.2.7",
     "validator": "^3.19.0"
   },

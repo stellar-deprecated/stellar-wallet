@@ -21,8 +21,8 @@ describe("stellarAddress.newAddressFromPublicKey", function() {
   it('should generate correct new network address from publicKey', function(done) {
     for (var i = 0; i < 50; i++) {
       var keyPair = StellarBase.Keypair.random();
-      var publicKeyString = keyPair.publicKey().toString("base64");
-      var address = keyPair.address();
+      var publicKeyString = keyPair.rawPublicKey().toString("base64");
+      var address = keyPair.publicKey();
       expect(stellarAddress.newAddressFromPublicKey(publicKeyString)).to.be.equal(address);
     }
     done();

@@ -133,14 +133,18 @@ describe("POST /wallets/show", function() {
     });
   });
 
-  it("logs a warning when the referer is an invalid url", function(done) {
-    this.sinon.spy(log, 'warn');
-    this.referer = "(╯°□°)╯︵ ┻━┻";
-    this.submit().end(function() {
-      expectRefererWarning();
-      done();
-    });
-  });
+  // Node 6.9.0 does not allow sending such request:
+  // > TypeError: The header content contains invalid characters
+  // >  at ClientRequest.OutgoingMessage.setHeader (_http_outgoing.js:358:11)
+  //
+  // it("logs a warning when the referer is an invalid url", function(done) {
+  //   this.sinon.spy(log, 'warn');
+  //   this.referer = "(╯°□°)╯︵ ┻━┻";
+  //   this.submit().end(function() {
+  //     expectRefererWarning();
+  //     done();
+  //   });
+  // });
 
   it("doesn't allow login if the wallet has been migrated to v2", function(done) {
     this.params.id = '5';
