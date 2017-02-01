@@ -11,14 +11,14 @@ paths.root = __dirname; //HACK: can't think of a better way to expose the app ro
 gulp.task('default',  ['test']);
 gulp.task('dist',     []);
 gulp.task('test',     ['lint', 'mocha-copy']);
-gulp.task('db:setup', ['db:ensure-created', 'db:migrate-copy']);
+gulp.task('db:setup', ['db:migrate-copy']);
 
 // After spending too much time trying to fix bad paths in stex, I decided to
 // copy gulp tasks with correct files here.
 // Correct fix is hard because we need to make sure stex is working here but
 // also for stellar-api. The problem is npm somehow creates a different tree in
 // /node_modules/stex/node_modules for stellar-wallet and stellar-api.
-gulp.task('db:migrate-copy', function(done) {
+gulp.task('db:migrate-copy', ['db:ensure-created'], function(done) {
   var kexec = require("kexec");
 
   if (!fs.existsSync("./migrations")) {
