@@ -14,11 +14,13 @@
     "scrypt-hash": "^1.1.14",
     "stellar-base": "0.7.0",
     "stellar-lib": "^0.9.6",
-    "stex": "stellar/stex#bbe9dbe0355f9280feb1928aaeba3a9e96a36e48",
+    "stex": "git+https://github.com/stellar/stex.git#master",
     "unirest": "^0.2.7",
     "validator": "^3.19.0"
   },
   "devDependencies": {
-    "gulp": "^3.8.5"
+    "gulp": "^3.8.5",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0"
   }
 }

@@ -626,7 +626,7 @@ describe("POST /v2/totp/enable", function() {
   it("does not update the totpKey if the message isn't signed properly", function (done) {
     var self = this;
 
-    return test.supertestAsPromised(app)
+    test.supertestAsPromised(app)
       .post('/v2/totp/enable')
       .send(this.params)
       .set('Accept', 'application/json')
@@ -646,7 +646,7 @@ describe("POST /v2/totp/enable", function() {
   it("clears the totpDisabledAt column", function(done) {
     var self = this;
 
-    return test.supertestAsPromised(app)
+    test.supertestAsPromised(app)
       .post('/v2/totp/enable')
       .sendSigned(this.params, "mfa-disabled@stellar.org", "mfa-disabled@stellar.org", helper.testKeyPair)
       .set('Accept', 'application/json')
@@ -731,7 +731,7 @@ describe("POST /v2/totp/disable", function() {
   });
 
   it("does not disable TOTP if the message isn't signed properly", function (done) {
-    return test.supertestAsPromised(app)
+    test.supertestAsPromised(app)
       .post('/v2/totp/disable')
       .send(this.params)
       .set('Accept', 'application/json')
