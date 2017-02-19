@@ -228,7 +228,7 @@ describe("POST /v2/wallets/create", function() {
   });
   
   it("fails when the username is less than 3 characters", function() {
-    this.params.username = "aa";
+    this.params.username = "aa@stellar.org";
     return this.submit()
         .expect(400)
         .expectBody({field:"username", code:"invalid_username"});
