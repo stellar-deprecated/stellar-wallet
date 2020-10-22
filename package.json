@@ -12,7 +12,7 @@
     "notp": "^2.0.2",
     "scmp": "0.0.3",
     "scrypt-hash": "^1.1.14",
-    "stellar-base": "0.7.0",
+    "stellar-base": "0.13.2",
     "stellar-lib": "^0.9.6",
     "stex": "git+https://github.com/stellar/stex.git#master",
     "unirest": "^0.2.7",
